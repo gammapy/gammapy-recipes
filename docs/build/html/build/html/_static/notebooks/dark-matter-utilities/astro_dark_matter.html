@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Dark matter spatial and spectral models &mdash; Gammapy recipes</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/gammapy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/gallery.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/gammapy_logo.ico"/>
+  
+
+  
+  
+    <link rel="canonical" href="https://gammapy.orgbuild/html/_static/notebooks/dark-matter-utilities/astro_dark_matter.html"/>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Gammapy recipes
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Recipes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html">MCMC sampling using the emcee package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#How-does-it-work-?">How does it work ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Why-should-I-use-it-?">Why should I use it ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Simulate-an-observation">Simulate an observation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Estimate-parameter-correlations-with-MCMC">Estimate parameter correlations with MCMC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Define-priors">Define priors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Plot-the-results">Plot the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Plot-the-model-dispersion">Plot the model dispersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Fun-Zone">Fun Zone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/mcmc-sampling-emcee/mcmc_sampling.html#PeVatrons-in-CTA-?">PeVatrons in CTA ?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html">Dark matter spatial and spectral models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#Introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#Profiles">Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#J-Factors">J Factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#Gamma-ray-spectra-at-production">Gamma-ray spectra at production</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../notebooks/dark-matter-utilities/astro_dark_matter.html#Flux-maps">Flux maps</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Gammapy recipes</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Dark matter spatial and spectral models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Dark-matter-spatial-and-spectral-models">
+<h1>Dark matter spatial and spectral models<a class="headerlink" href="#Dark-matter-spatial-and-spectral-models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline">¶</a></h2>
+<p>Gammapy has some convenience methods for dark matter analyses in <code class="docutils literal notranslate"><span class="pre">~gammapy.astro.darkmatter</span></code>. These include J-Factor computation and calculation the expected gamma flux for a number of annihilation channels. They are presented in this notebook.</p>
+<p>The basic concepts of indirect dark matter searches, however, are not explained. So this is aimed at people who already know what the want to do. A good introduction to indirect dark matter searches is given for example in <a class="reference external" href="https://arxiv.org/pdf/1012.4515.pdf">https://arxiv.org/pdf/1012.4515.pdf</a> (Chapter 1 and 5)</p>
+</div>
+<div class="section" id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+<p>As always, we start with some setup for the notebook, and with imports.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">gammapy.astro.darkmatter</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">JFactory</span><span class="p">,</span>
+    <span class="n">PrimaryFlux</span><span class="p">,</span>
+    <span class="n">DarkMatterAnnihilationSpectralModel</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">gammapy.maps</span> <span class="kn">import</span> <span class="n">WcsGeom</span><span class="p">,</span> <span class="n">WcsNDMap</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span> <span class="nn">regions</span> <span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Profiles">
+<h2>Profiles<a class="headerlink" href="#Profiles" title="Permalink to this headline">¶</a></h2>
+<p>The following dark matter profiles are currently implemented. Each model can be scaled to a given density at a certain distance. These parameters are controlled by <code class="docutils literal notranslate"><span class="pre">profiles.DMProfile.LOCAL_DENSITY</span></code> and <code class="docutils literal notranslate"><span class="pre">profiles.DMProfile.DISTANCE_GC</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[gammapy.astro.darkmatter.profiles.NFWProfile,
+ gammapy.astro.darkmatter.profiles.EinastoProfile,
+ gammapy.astro.darkmatter.profiles.IsothermalProfile,
+ gammapy.astro.darkmatter.profiles.BurkertProfile,
+ gammapy.astro.darkmatter.profiles.MooreProfile]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">profile</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">scale_to_local_density</span><span class="p">()</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">kpc</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">p</span><span class="p">(</span><span class="n">radii</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">8.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;local density&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LOCAL_DENSITY:&quot;</span><span class="p">,</span> <span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">LOCAL_DENSITY</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DISTANCE_GC:&quot;</span><span class="p">,</span> <span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">DISTANCE_GC</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LOCAL_DENSITY: 0.3 GeV / cm3
+DISTANCE_GC: 8.33 kpc
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_6_1.png" src="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_6_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="J-Factors">
+<h2>J Factors<a class="headerlink" href="#J-Factors" title="Permalink to this headline">¶</a></h2>
+<p>There are utilities to compute J-Factor maps can can serve as a basis to compute J-Factors for certain regions. In the following we compute a J-Factor map for the Galactic Centre region</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">profiles</span><span class="o">.</span><span class="n">NFWProfile</span><span class="p">()</span>
+
+<span class="c1"># Adopt standard values used in HESS</span>
+<span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">DISTANCE_GC</span> <span class="o">=</span> <span class="mf">8.5</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">kpc</span>
+<span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">LOCAL_DENSITY</span> <span class="o">=</span> <span class="mf">0.39</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;GeV / cm3&quot;</span><span class="p">)</span>
+
+<span class="n">profile</span><span class="o">.</span><span class="n">scale_to_local_density</span><span class="p">()</span>
+
+<span class="n">position</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="n">geom</span> <span class="o">=</span> <span class="n">WcsGeom</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">binsz</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">skydir</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">jfactory</span> <span class="o">=</span> <span class="n">JFactory</span><span class="p">(</span>
+    <span class="n">geom</span><span class="o">=</span><span class="n">geom</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">profiles</span><span class="o">.</span><span class="n">DMProfile</span><span class="o">.</span><span class="n">DISTANCE_GC</span>
+<span class="p">)</span>
+<span class="n">jfact</span> <span class="o">=</span> <span class="n">jfactory</span><span class="o">.</span><span class="n">compute_jfactor</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">jfact_map</span> <span class="o">=</span> <span class="n">WcsNDMap</span><span class="p">(</span><span class="n">geom</span><span class="o">=</span><span class="n">geom</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jfact</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">jfact</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">im</span> <span class="o">=</span> <span class="n">jfact_map</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">add_cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;J-Factor [</span><span class="si">{</span><span class="n">jfact_map</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1 deg circle usually used in H.E.S.S. analyses</span>
+<span class="n">sky_reg</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="n">pix_reg</span> <span class="o">=</span> <span class="n">sky_reg</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">wcs</span><span class="p">)</span>
+<span class="n">pix_reg</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1 deg circle&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No handles with labels found to put in legend.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7f4ce46ed590&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_10_2.png" src="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_10_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># NOTE: https://arxiv.org/abs/1607.08142 quote 2.67e21 without the +/- 0.3 deg band around the plane</span>
+<span class="n">total_jfact</span> <span class="o">=</span> <span class="n">pix_reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">()</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">jfact</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;J-factor in 1 deg circle around GC assuming a &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">profile</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">total_jfact</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+J-factor in 1 deg circle around GC assuming a NFWProfile is 1.35e+21 GeV2 / cm5
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Gamma-ray-spectra-at-production">
+<h2>Gamma-ray spectra at production<a class="headerlink" href="#Gamma-ray-spectra-at-production" title="Permalink to this headline">¶</a></h2>
+<p>The gamma-ray spectrum per annihilation is a further ingredient for a dark matter analysis. The following annihilation channels are supported. For more info see <a class="reference external" href="https://arxiv.org/pdf/1012.4515.pdf">https://arxiv.org/pdf/1012.4515.pdf</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fluxes</span> <span class="o">=</span> <span class="n">PrimaryFlux</span><span class="p">(</span><span class="n">mDM</span><span class="o">=</span><span class="s2">&quot;1 TeV&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;eL&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fluxes</span><span class="o">.</span><span class="n">allowed_channels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;eL&#39;, &#39;eR&#39;, &#39;e&#39;, &#39;muL&#39;, &#39;muR&#39;, &#39;mu&#39;, &#39;tauL&#39;, &#39;tauR&#39;, &#39;tau&#39;, &#39;q&#39;, &#39;c&#39;, &#39;b&#39;, &#39;t&#39;, &#39;WL&#39;, &#39;WT&#39;, &#39;W&#39;, &#39;ZL&#39;, &#39;ZT&#39;, &#39;Z&#39;, &#39;g&#39;, &#39;gamma&#39;, &#39;h&#39;, &#39;nu_e&#39;, &#39;nu_mu&#39;, &#39;nu_tau&#39;, &#39;V-&gt;e&#39;, &#39;V-&gt;mu&#39;, &#39;V-&gt;tau&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+<span class="n">mDMs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span>
+
+<span class="k">for</span> <span class="n">mDM</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mDMs</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="n">fluxes</span><span class="o">.</span><span class="n">mDM</span> <span class="o">=</span> <span class="n">mDM</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;m$_</span><span class="si">{</span><span class="p">{</span><span class="err">\</span><span class="n">mathrm</span><span class="p">{{</span><span class="n">DM</span><span class="p">}}}</span><span class="si">}</span><span class="s2">$ = </span><span class="si">{</span><span class="n">mDM</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;dN/dE&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]:</span>
+        <span class="n">fluxes</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">channel</span>
+        <span class="n">fluxes</span><span class="o">.</span><span class="n">table_model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">energy_range</span><span class="o">=</span><span class="p">[</span><span class="n">mDM</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">mDM</span><span class="p">],</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+            <span class="n">flux_unit</span><span class="o">=</span><span class="s2">&quot;1/GeV&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:415: MatplotlibDeprecationWarning: The &#39;nonposx&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_xscale(&#34;log&#34;, nonposx=&#34;clip&#34;)
+/usr/share/miniconda/envs/gammapy-recipes/lib/python3.7/site-packages/gammapy/modeling/models/spectral.py:416: MatplotlibDeprecationWarning: The &#39;nonposy&#39; parameter of __init__() has been renamed &#39;nonpositive&#39; since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+  ax.set_yscale(&#34;log&#34;, nonposy=&#34;clip&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_14_1.png" src="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_14_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Flux-maps">
+<h2>Flux maps<a class="headerlink" href="#Flux-maps" title="Permalink to this headline">¶</a></h2>
+<p>Finally flux maps can be produced like this:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">channel</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
+<span class="n">massDM</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span>
+<span class="n">diff_flux</span> <span class="o">=</span> <span class="n">DarkMatterAnnihilationSpectralModel</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="n">massDM</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+<span class="n">int_flux</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">jfact</span> <span class="o">*</span> <span class="n">diff_flux</span><span class="o">.</span><span class="n">integral</span><span class="p">(</span><span class="n">energy_min</span><span class="o">=</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="p">,</span> <span class="n">energy_max</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cm-2 s-1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">flux_map</span> <span class="o">=</span> <span class="n">WcsNDMap</span><span class="p">(</span><span class="n">geom</span><span class="o">=</span><span class="n">geom</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">int_flux</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;cm-2 s-1&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">im</span> <span class="o">=</span> <span class="n">flux_map</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">add_cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Flux [</span><span class="si">{</span><span class="n">int_flux</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="s2"> m$_</span><span class="se">{{</span><span class="s2">DM</span><span class="se">}}</span><span class="s2">$=</span><span class="si">{</span><span class="n">fluxes</span><span class="o">.</span><span class="n">mDM</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;TeV&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">, channel=</span><span class="si">{</span><span class="n">fluxes</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Flux [1 / (cm2 s)]\n m$_{DM}$=10.0 TeV, channel=Z&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_17_1.png" src="../../../../../_images/build_html__static_notebooks_dark-matter-utilities_astro_dark_matter_17_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Gammapy recipes contributors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -36,6 +36,9 @@ import numpy as np
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 import matplotlib.pyplot as plt
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 # ## Profiles
