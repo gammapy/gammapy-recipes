@@ -46,7 +46,7 @@ jobs:
           done
           if [ -n "${folder}" ] && [ -d "${folder}" ]; then
             python scripts/process.py --src ${folder}
-            cd docs && python -m sphinx . _build/html -b html && cd ..
+            cd docs && python -m sphinx . build/html -b html && cd ..
             rm -Rf gammapy-datasets
           fi
       - name: commit changes
