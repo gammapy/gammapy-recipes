@@ -1,0 +1,23 @@
+# Conda environment for Gammapy user notebooks repository
+#
+# Install:    conda env create -f environment.yml
+# Update:     conda env update -f environment.yml
+# Activate:   conda activate gammapy-recipes
+# Deactivate: conda deactivate
+
+name: gammapy-recipes
+
+channels:
+  - conda-forge
+  - sherpa
+
+dependencies:
+  # dev dependencies
+  - tqdm
+  - click
+  - sphinx
+  - sphinx-gallery
+  - sphinx_rtd_theme
+  - nbsphinx
+  - black
+

@@ -1,0 +1,57 @@
+name: ci
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      GAMMAPY_DATA: /home/runner/work/tutorials/tutorials/gammapy-datasets
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: create and activate env
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: gammapy-recipes
+          environment-file: environment.yml
+          auto-update-conda: true
+      - id: grabmodifs
+        uses: trilom/file-changes-action@v1.2.3
+        with:
+          output: ', '
+      - name: update env and download data
+        run: |
+          IFS=', ' read -r -a array <<< "${{ steps.grabmodifs.outputs.files }}"
+          for file in ${array[@]}; do
+            if [[ ${file} =~ "recipes/" ]]; then
+              folder="$(dirname "${file}")"
+              env="${folder}/env.yml"
+            fi
+          done
+          if [ -n "${folder}" ] && [ -d "${folder}" ]; then
+            conda env update --name gammapy-recipes --file ${env}
+            gammapy download datasets
+          fi
+      - name: test notebook and build docs
+        run: |
+          IFS=', ' read -r -a array <<< "${{ steps.grabmodifs.outputs.files }}"
+          for file in ${array[@]}; do
+            if [[ ${file} =~ "recipes/" ]]; then
+              folder="$(dirname "${file}")"
+            fi
+          done
+          if [ -n "${folder}" ] && [ -d "${folder}" ]; then
+            python scripts/process.py --src ${folder}
+            cd docs && python -m sphinx . _build/html -b html && cd ..
+            rm -Rf gammapy-datasets
+          fi
+      - name: commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4.1.6
+        if: github.event.pull_request.merged == true
+        with:
+          commit_author: GitHub Actions <actions@github.com>
+          commit_message: commit built documentation
