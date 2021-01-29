@@ -12,4 +12,4 @@ Prototype for a repository of notebooks.
 
 You may have a look at the [automated Sphinx documentation built](https://www.iaa.csic.es/~jer/recipes).
 
-![](https://github.com/bultako/tutorials/workflows/ci/badge.svg)
+![](https://github.com/gammapy/gammapy-recipes/workflows/ci/badge.svg)

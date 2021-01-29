@@ -4,7 +4,7 @@ Contributing
 ------------
 
 Please follow these rules below before making a pull request in
-the Gammapy recipes `Github repository <https://github.com/Bultako/tutorials>`_.
+the Gammapy recipes `Github repository <https://github.com/gammapy/gammapy-recipes>`_.
 
 - copy any of the existing folders in ``recipes`` and rename it as your own recipe
 - modify the ``env.yml`` file and specify your needed dependencies
