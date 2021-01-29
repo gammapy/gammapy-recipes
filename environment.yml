@@ -13,6 +13,7 @@ channels:
 
 dependencies:
   # dev dependencies
+  - nbformat=5.0.8
   - tqdm
   - click
   - sphinx
