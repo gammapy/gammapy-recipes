@@ -479,7 +479,7 @@ div.rendered_html tbody tr:hover {
 distribution of each parameter by simply approximating it with the histogram of the samples projected into the parameter space. This will provide the errors and correlations between parameters.</p>
 <p>Now let’s try to put a picture on the ideas described above. With this notebook, we have simulated and carried out a MCMC analysis for a source with the following parameters: <span class="math notranslate nohighlight">\(Index=2.0\)</span>, <span class="math notranslate nohighlight">\(Norm=5\times10^{-12}\)</span> cm<span class="math notranslate nohighlight">\(^{-2}\)</span> s<span class="math notranslate nohighlight">\(^{-1}\)</span> TeV<span class="math notranslate nohighlight">\(^{-1}\)</span>, <span class="math notranslate nohighlight">\(Lambda =(1/Ecut) = 0.02\)</span> TeV<span class="math notranslate nohighlight">\(^{-1}\)</span> (50 TeV) for 20 hours.</p>
 <p>The results that you can get from a MCMC analysis will look like this :</p>
-<p><img alt="dce710d9d1fd473cba059116c9639a25" class="no-scaled-link" src="../../_images/gammapy_mcmc.png" style="width: 800px;" /></p>
+<p><img alt="0c45a85dcba54e0d8e8746244b247a0d" class="no-scaled-link" src="../../_images/gammapy_mcmc.png" style="width: 800px;" /></p>
 <p>On the first two top panels, we show the pseudo-random walk of one walker from an offset starting value to see it evolve to a better solution. In the bottom right panel, we show the trace of each 16 walkers for 500 runs (the chain described previsouly). For the first 100 runs, the parameter evolve towards a solution (can be viewed as a fitting step). Then they explore the local minimum for 400 runs which will be used to estimate the parameters correlations and errors. The choice of the Nburn
 value (when walkers have reached a stationary stage) can be done by eye but you can also look at the autocorrelation time.</p>
 </div>
@@ -686,7 +686,7 @@ Component 1: FoVBackgroundModel
 <div class="highlight"><pre>
 (&lt;Figure size 432x288 with 2 Axes&gt;,
  &lt;WCSAxesSubplot:xlabel=&#39;Galactic Longitude&#39;, ylabel=&#39;Galactic Latitude&#39;&gt;,
- &lt;matplotlib.colorbar.Colorbar at 0x7fc067241510&gt;)
+ &lt;matplotlib.colorbar.Colorbar at 0x7fe28f5feb90&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -735,11 +735,11 @@ MapDataset
 
   Name                            : dataset-mcmc
 
-  Total counts                    : 248535
+  Total counts                    : 248102
   Total background counts         : 238923.09
-  Total excess counts             : 9611.91
+  Total excess counts             : 9178.91
 
-  Predicted counts                : 248096.17
+  Predicted counts                : 248096.18
   Predicted background counts     : 238923.09
   Predicted excess counts         : 9173.09
 
@@ -750,7 +750,7 @@ MapDataset
   Number of fit bins              : 22400
 
   Fit statistic type              : cash
-  Fit statistic value (-2 log(L)) : -1299770.55
+  Fit statistic value (-2 log(L)) : -1296274.80
 
   Number of models                : 2
   Number of parameters            : 13
@@ -869,7 +869,7 @@ Component 1: FoVBackgroundModel
     reference    (frozen)   :   1.000  TeV
 
 
-stat = -1299755.20732056
+stat = -1296269.9292261866
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -902,8 +902,8 @@ INFO:gammapy.modeling.sampling:100% =&gt; sampling completed
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-CPU times: user 6.12 s, sys: 35.6 ms, total: 6.16 s
-Wall time: 6.16 s
+CPU times: user 8.06 s, sys: 1.74 ms, total: 8.07 s
+Wall time: 8.06 s
 </pre></div></div>
 </div>
 </div>
