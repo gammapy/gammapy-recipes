@@ -132,7 +132,8 @@ def process_notebook(nb_path):
 
 
 def tear_down(exitcode):
-    shutil.rmtree(PATH_TEMP)
+    if PATH_TEMP.exists():
+        shutil.rmtree(PATH_TEMP)
     log.info("Exiting now.")
     sys.exit(exitcode)
 

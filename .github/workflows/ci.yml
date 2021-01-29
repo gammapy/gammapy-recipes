@@ -9,7 +9,7 @@ jobs:
       run:
         shell: bash -l {0}
     env:
-      GAMMAPY_DATA: /home/runner/work/tutorials/tutorials/gammapy-datasets
+      GAMMAPY_DATA: /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
