@@ -36,7 +36,7 @@ jobs:
             conda env update --name gammapy-recipes --file ${env}
             gammapy download datasets
           fi
-      - name: test notebook and build docs
+      - name: test notebooks
         run: |
           IFS=', ' read -r -a array <<< "${{ steps.grabmodifs.outputs.files }}"
           for file in ${array[@]}; do
@@ -46,9 +46,11 @@ jobs:
           done
           if [ -n "${folder}" ] && [ -d "${folder}" ]; then
             python scripts/process.py --src ${folder}
+          fi
+      - name: build docs
+        run: |
             cd docs && python -m sphinx . _build/html -b html && cd ..
             rm -Rf gammapy-datasets
-          fi
       - name: commit changes
         uses: stefanzweifel/git-auto-commit-action@v4.1.6
         if: github.event.pull_request.merged == true

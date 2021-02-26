@@ -172,7 +172,7 @@ def main():
     except Exception:
         traceback.print_exception(*sys.exc_info())
         tear_down(1)
-    finally:
+    else:
         tear_down(0)
 
 
