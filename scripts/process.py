@@ -11,7 +11,7 @@ import traceback
 from pathlib import Path
 
 from distutils.dir_util import copy_tree
-from gammapy.scripts.jupyter import notebook_test
+from gammapy.scripts.jupyter import notebook_run
 from nbformat.v4 import new_markdown_cell
 
 log = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ def process_notebook(nb_path):
     copy_tree(str(folder_path), str(dest_path_temp))
 
     # fill it in temp folder
-    if notebook_test(nb_temp):
+    if notebook_run(nb_temp):
 
         # copy clean notebook and env.yml in recipes to clean folder
         log.info(f"Copying notebook {nb_path} to {dest_path_clean}")
