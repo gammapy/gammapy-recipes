@@ -7,7 +7,7 @@ Gammapy
 -------
 
 Gammapy is a community-developed, open-source Python package for gamma-ray
-astronomy. It is a prototype for the `CTA Cherenkov Telescope Array <https://www.cta-observatory.org>`_
+astronomy and core library for the `CTA Cherenkov Telescope Array <https://www.cta-observatory.org>`_
 science tools.
 
 You may find more information in the following links:
