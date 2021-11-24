@@ -17,7 +17,7 @@ You may find more information in the following links:
 - `Gammapy documentation <https://docs.gammapy.org>`_
 
 In this webpage you may find a collection of user contributed Jupyter notebooks. These cover a
-wide variety of **specif use cases** not present in the `documentation tutorials
+wide variety of **specific use cases** not present in the `documentation tutorials
 <https://docs.gammapy.org/dev/tutorials>`_. Please, read carefully the :ref:`contributing` instructions
 if you would like to contribute with your own recipes.
 
