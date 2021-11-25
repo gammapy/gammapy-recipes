@@ -19,10 +19,11 @@
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="MCMC sampling using the emcee package" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html" />
+    <link rel="next" title="TSMapEstimator vs. ExcessMapEstimator" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html" />
     <link rel="prev" title="Gammapy" href="index.html" /> 
 </head>
 
@@ -46,6 +47,21 @@
 </ul>
 <p class="caption"><span class="caption-text">Recipes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error">Flux Error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-UL">Flux UL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Pos.">Flux Error Pos.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Neg.">Flux Error Neg.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Sqrt(TS)">Sqrt(TS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Excess">NPred Excess</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Ref.">NPred Ref.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Err">NPred Err</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Pos.">NPred Error Pos.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Neg.">NPred Error Neg.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-UL">NPred UL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html">MCMC sampling using the emcee package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html#Introduction">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html#How-does-it-work-?">How does it work ?</a></li>
@@ -63,6 +79,10 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html#PeVatrons-in-CTA-?">PeVatrons in CTA ?</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/interactive-model-editing/interactive-model-editing.html">Recipe to show the interactively edit the Sky model on the notebook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interactive-model-editing/interactive-model-editing.html#Load-the-changed-parameters-and-verify-that-the-model-has-been-updated">Load the changed parameters and verify that the model has been updated</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html">Dark matter spatial and spectral models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html#Introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html#Setup">Setup</a></li>
@@ -70,6 +90,17 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html#J-Factors">J Factors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html#Gamma-ray-spectra-at-production">Gamma-ray spectra at production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html#Flux-maps">Flux maps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/background-model/background_model.html">Create a template background model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Context">Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Proposed-approach">Proposed approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Select-off-data">Select off data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Background-model">Background model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Zenith-dependence">Zenith dependence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Index-tables">Index tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/background-model/background_model.html#Exercises">Exercises</a></li>
 </ul>
 </li>
 </ul>
@@ -160,7 +191,7 @@ please remove the old recipe folders and their content in the following places b
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Gammapy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html" class="btn btn-neutral float-right" title="MCMC sampling using the emcee package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html" class="btn btn-neutral float-right" title="TSMapEstimator vs. ExcessMapEstimator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

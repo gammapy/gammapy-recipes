@@ -19,10 +19,12 @@
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="MCMC sampling using the emcee package" href="../mcmc-sampling-emcee/mcmc_sampling.html" /> 
+    <link rel="next" title="Create a template background model" href="../background-model/background_model.html" />
+    <link rel="prev" title="Recipe to show the interactively edit the Sky model on the notebook" href="../interactive-model-editing/interactive-model-editing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,6 +47,21 @@
 </ul>
 <p class="caption"><span class="caption-text">Recipes</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error">Flux Error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-UL">Flux UL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Pos.">Flux Error Pos.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Neg.">Flux Error Neg.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Sqrt(TS)">Sqrt(TS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Excess">NPred Excess</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Ref.">NPred Ref.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Err">NPred Err</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Pos.">NPred Error Pos.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Neg.">NPred Error Neg.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-UL">NPred UL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html">MCMC sampling using the emcee package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Introduction">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#How-does-it-work-?">How does it work ?</a></li>
@@ -62,6 +79,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#PeVatrons-in-CTA-?">PeVatrons in CTA ?</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../interactive-model-editing/interactive-model-editing.html">Recipe to show the interactively edit the Sky model on the notebook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../interactive-model-editing/interactive-model-editing.html#Load-the-changed-parameters-and-verify-that-the-model-has-been-updated">Load the changed parameters and verify that the model has been updated</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dark matter spatial and spectral models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
@@ -69,6 +90,17 @@
 <li class="toctree-l2"><a class="reference internal" href="#J-Factors">J Factors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Gamma-ray-spectra-at-production">Gamma-ray spectra at production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Flux-maps">Flux maps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../background-model/background_model.html">Create a template background model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Context">Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Proposed-approach">Proposed approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Select-off-data">Select off data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Background-model">Background model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Zenith-dependence">Zenith dependence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Index-tables">Index tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Exercises">Exercises</a></li>
 </ul>
 </li>
 </ul>
@@ -697,7 +729,8 @@ Text(0.5, 1.0, &#39;Flux [1 / (cm2 s)]\n m$_{DM}$=10.0 TeV, channel=Z&#39;)
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../mcmc-sampling-emcee/mcmc_sampling.html" class="btn btn-neutral float-left" title="MCMC sampling using the emcee package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../interactive-model-editing/interactive-model-editing.html" class="btn btn-neutral float-left" title="Recipe to show the interactively edit the Sky model on the notebook" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../background-model/background_model.html" class="btn btn-neutral float-right" title="Create a template background model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
