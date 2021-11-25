@@ -13,6 +13,8 @@ channels:
 
 dependencies:
   # dev dependencies
+  - IPython
+  - ipywidgets
   - nbformat=5.0.8
   - tqdm
   - click

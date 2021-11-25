@@ -60,3 +60,5 @@ jobs:
         with:
           commit_author: GitHub Actions <actions@github.com>
           commit_message: commit built documentation
+          branch : master
+          
