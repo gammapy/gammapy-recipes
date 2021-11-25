@@ -49,6 +49,7 @@ jobs:
           fi
       - name: build docs
         run: |
+            rm -Rf docs/_build/html
             cd docs && python -m sphinx . _build/html -b html && cd ..
             rm -Rf gammapy-datasets
       - name: commit changes
