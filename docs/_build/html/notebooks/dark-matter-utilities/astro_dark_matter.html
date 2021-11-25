@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dark matter spatial and spectral models &mdash; Gammapy recipes</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <title>Dark matter spatial and spectral models &mdash; Gammapy recipes</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/gammapy.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" /><link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
     <link rel="canonical" href="https://gammapy.orgnotebooks/dark-matter-utilities/astro_dark_matter.html"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -45,7 +48,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Recipes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
@@ -405,15 +408,15 @@ div.rendered_html tbody tr:hover {
 <li><p><strong>Environment:</strong> <a class="reference external" href="../../_static/notebooks/dark-matter-utilities/env.yml">env.yml</a></p></li>
 </ul>
 </div>
-<div class="section" id="Dark-matter-spatial-and-spectral-models">
-<h1>Dark matter spatial and spectral models<a class="headerlink" href="#Dark-matter-spatial-and-spectral-models" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Introduction">
-<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline">¶</a></h2>
+<section id="Dark-matter-spatial-and-spectral-models">
+<h1>Dark matter spatial and spectral models<a class="headerlink" href="#Dark-matter-spatial-and-spectral-models" title="Permalink to this headline"></a></h1>
+<section id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline"></a></h2>
 <p>Gammapy has some convenience methods for dark matter analyses in <code class="docutils literal notranslate"><span class="pre">~gammapy.astro.darkmatter</span></code>. These include J-Factor computation and calculation the expected gamma flux for a number of annihilation channels. They are presented in this notebook.</p>
 <p>The basic concepts of indirect dark matter searches, however, are not explained. So this is aimed at people who already know what the want to do. A good introduction to indirect dark matter searches is given for example in <a class="reference external" href="https://arxiv.org/pdf/1012.4515.pdf">https://arxiv.org/pdf/1012.4515.pdf</a> (Chapter 1 and 5)</p>
-</div>
-<div class="section" id="Setup">
-<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline"></a></h2>
 <p>As always, we start with some setup for the notebook, and with imports.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -449,9 +452,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Profiles">
-<h2>Profiles<a class="headerlink" href="#Profiles" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Profiles">
+<h2>Profiles<a class="headerlink" href="#Profiles" title="Permalink to this headline"></a></h2>
 <p>The following dark matter profiles are currently implemented. Each model can be scaled to a given density at a certain distance. These parameters are controlled by <code class="docutils literal notranslate"><span class="pre">profiles.DMProfile.LOCAL_DENSITY</span></code> and <code class="docutils literal notranslate"><span class="pre">profiles.DMProfile.DISTANCE_GC</span></code></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -511,9 +514,9 @@ DISTANCE_GC: 8.33 kpc
 <img alt="../../_images/notebooks_dark-matter-utilities_astro_dark_matter_7_1.png" src="../../_images/notebooks_dark-matter-utilities_astro_dark_matter_7_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="J-Factors">
-<h2>J Factors<a class="headerlink" href="#J-Factors" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="J-Factors">
+<h2>J Factors<a class="headerlink" href="#J-Factors" title="Permalink to this headline"></a></h2>
 <p>There are utilities to compute J-Factor maps can can serve as a basis to compute J-Factors for certain regions. In the following we compute a J-Factor map for the Galactic Centre region</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -608,9 +611,9 @@ No handles with labels found to put in legend.
 J-factor in 1 deg circle around GC assuming a NFWProfile is 1.35e+21 GeV2 / cm5
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Gamma-ray-spectra-at-production">
-<h2>Gamma-ray spectra at production<a class="headerlink" href="#Gamma-ray-spectra-at-production" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Gamma-ray-spectra-at-production">
+<h2>Gamma-ray spectra at production<a class="headerlink" href="#Gamma-ray-spectra-at-production" title="Permalink to this headline"></a></h2>
 <p>The gamma-ray spectrum per annihilation is a further ingredient for a dark matter analysis. The following annihilation channels are supported. For more info see <a class="reference external" href="https://arxiv.org/pdf/1012.4515.pdf">https://arxiv.org/pdf/1012.4515.pdf</a></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -665,9 +668,9 @@ J-factor in 1 deg circle around GC assuming a NFWProfile is 1.35e+21 GeV2 / cm5
 <img alt="../../_images/notebooks_dark-matter-utilities_astro_dark_matter_15_0.png" src="../../_images/notebooks_dark-matter-utilities_astro_dark_matter_15_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Flux-maps">
-<h2>Flux maps<a class="headerlink" href="#Flux-maps" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Flux-maps">
+<h2>Flux maps<a class="headerlink" href="#Flux-maps" title="Permalink to this headline"></a></h2>
 <p>Finally flux maps can be produced like this:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -722,8 +725,8 @@ Text(0.5, 1.0, &#39;Flux [1 / (cm2 s)]\n m$_{DM}$=10.0 TeV, channel=Z&#39;)
 </pre></div>
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

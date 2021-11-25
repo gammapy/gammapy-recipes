@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create a template background model &mdash; Gammapy recipes</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <title>Create a template background model &mdash; Gammapy recipes</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/gammapy.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" /><link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
     <link rel="canonical" href="https://gammapy.orgnotebooks/background-model/background_model.html"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -44,7 +47,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Recipes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
@@ -404,16 +407,16 @@ div.rendered_html tbody tr:hover {
 <li><p><strong>Environment:</strong> <a class="reference external" href="../../_static/notebooks/background-model/env.yml">env.yml</a></p></li>
 </ul>
 </div>
-<div class="section" id="Create-a-template-background-model">
-<h1>Create a template background model<a class="headerlink" href="#Create-a-template-background-model" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Context">
-<h2>Context<a class="headerlink" href="#Context" title="Permalink to this headline">¶</a></h2>
+<section id="Create-a-template-background-model">
+<h1>Create a template background model<a class="headerlink" href="#Create-a-template-background-model" title="Permalink to this headline"></a></h1>
+<section id="Context">
+<h2>Context<a class="headerlink" href="#Context" title="Permalink to this headline"></a></h2>
 <p>DL3 data is usually shipped with a background IRF. However, sometimes it is necessary to be able to build background templates from scratch.</p>
 <p>In this notebook, we show a very basic example of how this can be done using off runs supplied within the HESS data release.</p>
 <p>Real life implementations can be found <a class="reference external" href="https://www.aanda.org/articles/aa/abs/2019/12/aa36452-19/aa36452-19.html">here</a> and a slightly different approach <a class="reference external" href="https://www.aanda.org/articles/aa/full_html/2019/12/aa36010-19/aa36010-19.html">here</a>.</p>
-</div>
-<div class="section" id="Proposed-approach">
-<h2>Proposed approach<a class="headerlink" href="#Proposed-approach" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Proposed-approach">
+<h2>Proposed approach<a class="headerlink" href="#Proposed-approach" title="Permalink to this headline"></a></h2>
 <p>We will use the “off observations”, i.e. those without significant gamma-ray emission sources in the field of view from the <a class="reference external" href="https://www.mpi-hd.mpg.de/hfm/HESS/pages/dl3-dr1/">H.E.S.S. first public test data release</a>. This model could then be used in the analysis of sources from that dataset (not done here).</p>
 <p>We will make a background model that is radially symmetric in the field of view, i.e. only depends on field of view offset angle and energy. At the end, we will save the model in the <code class="docutils literal notranslate"><span class="pre">BKG_2D</span></code> as defined in the <a class="reference external" href="https://gamma-astro-data-formats.readthedocs.io/en/latest/irfs/full_enclosure/bkg/index.html">spec</a>.</p>
 <p>Note that this is just a very simplified example. Actual background model production is done with more sophistication usually using 100s or 1000s of off runs, e.g. concerning non-radial symmetries, binning and smoothing of the distributions, and treating other dependencies such as zenith angle, telescope configuration or optical efficiency. Another aspect not shown here is how to use AGN observations to make background models, by cutting out the part of the field of view that contains gamma-rays
@@ -423,9 +426,9 @@ from the AGN.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">~gammapy.data.DataStore</span></code> to load the runs to use to build the bkg model.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">~gammapy.irf.Background2D</span></code> to represent and write the background model.</p></li>
 </ul>
-</div>
-<div class="section" id="Setup">
-<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline"></a></h2>
 <p>As always, we start the notebook with some setup and imports.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -462,9 +465,9 @@ from the AGN.</p>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Select-off-data">
-<h2>Select off data<a class="headerlink" href="#Select-off-data" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Select-off-data">
+<h2>Select off data<a class="headerlink" href="#Select-off-data" title="Permalink to this headline"></a></h2>
 <p>We start by selecting the observations used to estimate the background model.</p>
 <p>In this case, we just take all “off runs” as defined in the observation table.</p>
 <div class="nbinput docutils container">
@@ -541,9 +544,9 @@ No HDU found matching: OBS_ID = 29683, HDU_TYPE = rad_max, HDU_CLASS = None
 Number of observations: 45
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Background-model">
-<h2>Background model<a class="headerlink" href="#Background-model" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Background-model">
+<h2>Background model<a class="headerlink" href="#Background-model" title="Permalink to this headline"></a></h2>
 <p>The background model we will estimate is a differential background rate model in unit <code class="docutils literal notranslate"><span class="pre">s-1</span> <span class="pre">MeV-1</span> <span class="pre">sr-1</span></code> as a function of reconstructed energy and field of fiew offset.</p>
 <p>We estimate it by histogramming off data events and then smoothing a bit (not using a good method) to get a less noisy estimate. To get the differential rate, we divide by observation time and also take bin sizes into account to get the rate per energy and solid angle. So overall we fill two arrays called <code class="docutils literal notranslate"><span class="pre">counts</span></code> and <code class="docutils literal notranslate"><span class="pre">exposure</span></code> with <code class="docutils literal notranslate"><span class="pre">exposure</span></code> filled so that <code class="docutils literal notranslate"><span class="pre">background_rate</span> <span class="pre">=</span> <span class="pre">counts</span> <span class="pre">/</span> <span class="pre">exposure</span></code> will give the final background rate we’re interested in.</p>
 <p>The processing can be done either one observation at a time, or first for counts and then for exposure. Either way is fine. Here we do one observation at a time, starting with empty histograms and then accumulating counts and exposure. Since this is a multi-step algorithm, we put the code to do this computation in a <code class="docutils literal notranslate"><span class="pre">BackgroundModelEstimator</span></code> class.</p>
@@ -647,9 +650,9 @@ Wall time: 1.21 s
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Zenith-dependence">
-<h2>Zenith dependence<a class="headerlink" href="#Zenith-dependence" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Zenith-dependence">
+<h2>Zenith dependence<a class="headerlink" href="#Zenith-dependence" title="Permalink to this headline"></a></h2>
 <p>The background models used in H.E.S.S. usually depend on the zenith angle of the observation. That kinda makes sense because the energy threshold increases with zenith angle, and since the background is related to (but not given by) the charged cosmic ray spectrum that is a power-law and falls steeply, we also expect the background rate to change.</p>
 <p>Let’s have a look at the dependence we get for this configuration used here (Hillas reconstruction, standard cuts, see H.E.S.S. release notes for more information).</p>
 <div class="nbinput docutils container">
@@ -861,9 +864,9 @@ Wall time: 1.23 s
 <img alt="../../_images/notebooks_background-model_background_model_22_0.png" src="../../_images/notebooks_background-model_background_model_22_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Index-tables">
-<h2>Index tables<a class="headerlink" href="#Index-tables" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Index-tables">
+<h2>Index tables<a class="headerlink" href="#Index-tables" title="Permalink to this headline"></a></h2>
 <p>So now we have radially symmetric background models for three zenith angle bins. To be able to use it from the high-level Gammapy classes like e.g. the MapMaker though, we also have to create a <a class="reference external" href="https://gamma-astro-data-formats.readthedocs.io/en/latest/data_storage/hdu_index/index.html">HDU index table</a> that declares which background model to use for each observation.</p>
 <p>It sounds harder than it actually is. Basically you have to some code to make a new <code class="docutils literal notranslate"><span class="pre">astropy.table.Table</span></code>. The most tricky part is that before you can make the HDU index table, you have to decide where to store the data, because the HDU index table is a reference to the data location. Let’s decide in this example that we want to re-use all existing files in <code class="docutils literal notranslate"><span class="pre">$GAMMAPY_DATA/hess-dl3-dr1</span></code> and put all the new HDUs (for background models and new index files) bundled in a single FITS file called
 <code class="docutils literal notranslate"><span class="pre">hess-dl3-dr3-with-background.fits.gz</span></code>, which we will put in <code class="docutils literal notranslate"><span class="pre">$GAMMAPY_DATA/hess-dl3-dr1</span></code>.</p>
@@ -1074,17 +1077,17 @@ Number of observations: 105
 <img alt="../../_images/notebooks_background-model_background_model_31_0.png" src="../../_images/notebooks_background-model_background_model_31_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Exercises">
-<h2>Exercises<a class="headerlink" href="#Exercises" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Exercises">
+<h2>Exercises<a class="headerlink" href="#Exercises" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Play with the parameters here (energy binning, offset binning, zenith binning)</p></li>
 <li><p>Try to figure out why there are outliers on the zenith vs energy threshold curve.</p></li>
 <li><p>Does azimuth angle or optical efficiency have an effect on background rate?</p></li>
 <li><p>Use the background models for a 3D analysis (see “hess” notebook).</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

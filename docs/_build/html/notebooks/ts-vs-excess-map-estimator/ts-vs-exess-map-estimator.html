@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TSMapEstimator vs. ExcessMapEstimator &mdash; Gammapy recipes</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <title>TSMapEstimator vs. ExcessMapEstimator &mdash; Gammapy recipes</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/gammapy.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" /><link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
     <link rel="canonical" href="https://gammapy.orgnotebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -45,7 +48,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Recipes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">TSMapEstimator vs. ExcessMapEstimator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Flux">Flux</a></li>
@@ -405,8 +408,8 @@ div.rendered_html tbody tr:hover {
 <li><p><strong>Environment:</strong> <a class="reference external" href="../../_static/notebooks/ts-vs-excess-map-estimator/env.yml">env.yml</a></p></li>
 </ul>
 </div>
-<div class="section" id="TSMapEstimator-vs. ExcessMapEstimator">
-<h1>TSMapEstimator vs. ExcessMapEstimator<a class="headerlink" href="#TSMapEstimator-vs. ExcessMapEstimator" title="Permalink to this headline">¶</a></h1>
+<section id="TSMapEstimator-vs. ExcessMapEstimator">
+<h1>TSMapEstimator vs. ExcessMapEstimator<a class="headerlink" href="#TSMapEstimator-vs. ExcessMapEstimator" title="Permalink to this headline"></a></h1>
 <p>This notebooks compares the results of the full likelihood fitting approach (“forward folding”) against the Li&amp;Ma solution of the same problem (“backwards folding”). The results are expected to be approximately equivalent in case of using a disk kernel for the <code class="docutils literal notranslate"><span class="pre">TSMapEstimator</span></code> and neclecting the effect of the PSF.</p>
 <p>The remaining difference is that while the <code class="docutils literal notranslate"><span class="pre">ExcessMapEstimator</span></code> sums all counts and computes flux based on the mean exposure in the same region, the <code class="docutils literal notranslate"><span class="pre">TSMapEstimator</span></code> takes into account the full pixel by pixel information.</p>
 <p>Results: - The results are indeed approximately equivalent - On average the <code class="docutils literal notranslate"><span class="pre">TSMapEstimator</span></code> find slightly higher errors because it takes into account the fluctuations per pixel - The <code class="docutils literal notranslate"><span class="pre">ExcessMapEstimator</span></code> is faster by a factor of 50-100 for ordinary flux and error estimation. Once assymetric errors and ULs are computed the <code class="docutils literal notranslate"><span class="pre">TSMapEstimator</span></code> shows the better performance and is ~2-3 times faster. When taking multiprocessing into account it is even faster by a factor of ~10.</p>
@@ -599,8 +602,8 @@ Wall time: 16.9 s
 </pre></div>
 </div>
 </div>
-<div class="section" id="Flux">
-<h2>Flux<a class="headerlink" href="#Flux" title="Permalink to this headline">¶</a></h2>
+<section id="Flux">
+<h2>Flux<a class="headerlink" href="#Flux" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -630,9 +633,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_12_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_12_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Flux-Error">
-<h2>Flux Error<a class="headerlink" href="#Flux-Error" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Flux-Error">
+<h2>Flux Error<a class="headerlink" href="#Flux-Error" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -666,9 +669,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_14_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_14_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Flux-UL">
-<h2>Flux UL<a class="headerlink" href="#Flux-UL" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Flux-UL">
+<h2>Flux UL<a class="headerlink" href="#Flux-UL" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -698,9 +701,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_16_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_16_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Flux-Error-Pos.">
-<h2>Flux Error Pos.<a class="headerlink" href="#Flux-Error-Pos." title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Flux-Error-Pos.">
+<h2>Flux Error Pos.<a class="headerlink" href="#Flux-Error-Pos." title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -734,9 +737,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_18_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_18_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Flux-Error-Neg.">
-<h2>Flux Error Neg.<a class="headerlink" href="#Flux-Error-Neg." title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Flux-Error-Neg.">
+<h2>Flux Error Neg.<a class="headerlink" href="#Flux-Error-Neg." title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -772,9 +775,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_20_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_20_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Sqrt(TS)">
-<h2>Sqrt(TS)<a class="headerlink" href="#Sqrt(TS)" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Sqrt(TS)">
+<h2>Sqrt(TS)<a class="headerlink" href="#Sqrt(TS)" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
@@ -809,9 +812,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_22_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_22_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-Excess">
-<h2>NPred Excess<a class="headerlink" href="#NPred-Excess" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-Excess">
+<h2>NPred Excess<a class="headerlink" href="#NPred-Excess" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
@@ -846,9 +849,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_24_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_24_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-Ref.">
-<h2>NPred Ref.<a class="headerlink" href="#NPred-Ref." title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-Ref.">
+<h2>NPred Ref.<a class="headerlink" href="#NPred-Ref." title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
@@ -882,9 +885,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_26_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_26_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-Err">
-<h2>NPred Err<a class="headerlink" href="#NPred-Err" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-Err">
+<h2>NPred Err<a class="headerlink" href="#NPred-Err" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
@@ -918,9 +921,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_28_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_28_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-Error-Pos.">
-<h2>NPred Error Pos.<a class="headerlink" href="#NPred-Error-Pos." title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-Error-Pos.">
+<h2>NPred Error Pos.<a class="headerlink" href="#NPred-Error-Pos." title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -954,9 +957,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_30_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_30_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-Error-Neg.">
-<h2>NPred Error Neg.<a class="headerlink" href="#NPred-Error-Neg." title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-Error-Neg.">
+<h2>NPred Error Neg.<a class="headerlink" href="#NPred-Error-Neg." title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
@@ -990,9 +993,9 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_32_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_32_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="NPred-UL">
-<h2>NPred UL<a class="headerlink" href="#NPred-UL" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="NPred-UL">
+<h2>NPred UL<a class="headerlink" href="#NPred-UL" title="Permalink to this headline"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
@@ -1027,8 +1030,8 @@ Wall time: 16.9 s
 <img alt="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_34_1.png" src="../../_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_34_1.png" />
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
