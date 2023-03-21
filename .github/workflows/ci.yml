@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.PAT }}
       - name: create and activate env
         uses: conda-incubator/setup-miniconda@v2
         with:
