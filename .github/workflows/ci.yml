@@ -1,7 +1,6 @@
 name: ci
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+  push
 jobs:
   process:
     runs-on: ubuntu-latest
