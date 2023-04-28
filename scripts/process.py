@@ -144,14 +144,19 @@ def main():
     # set up
     PATH_TEMP.mkdir()
 
-    if "GAMMAPY_PATH" not in os.environ:
-        log.error("GAMMAPY_PATH environment variable not set.")
+    if "GAMMAPY_DATA" not in os.environ:
+        log.error("GAMMAPY_DATA environment variable not set.")
         log.error("Running notebook tests requires this environment variable.")
         tear_down(1)
 
     version = gammapy.__version__
-    gammapy_path = os.environ["GAMMAPY_PATH"]
-    os.environ.update({"GAMMAPY_DATA": gammapy_path + '/' + version})
+
+    gammapy_data = os.environ["GAMMAPY_DATA"]
+
+    if version[0] != '0':
+        print(gammapy_data.split('/'))
+        if gammapy_data.split('/')[-1] != version:
+            os.environ.update({"GAMMAPY_DATA": gammapy_data + '/' + version})
 
     try:
         p = 0
