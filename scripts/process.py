@@ -11,6 +11,7 @@ import traceback
 from pathlib import Path
 
 from distutils.dir_util import copy_tree
+import gammapy
 from nbformat.v4 import new_markdown_cell
 
 sys.path.append('scripts')
@@ -143,10 +144,14 @@ def main():
     # set up
     PATH_TEMP.mkdir()
 
-    if "GAMMAPY_DATA" not in os.environ:
-        log.error("GAMMAPY_DATA environment variable not set.")
+    if "GAMMAPY_PATH" not in os.environ:
+        log.error("GAMMAPY_PATH environment variable not set.")
         log.error("Running notebook tests requires this environment variable.")
         tear_down(1)
+
+    version = gammapy.__version__
+    gammapy_path = os.environ["GAMMAPY_PATH"]
+    os.environ.update({"GAMMAPY_DATA": gammapy_path + '/' + version})
 
     try:
         p = 0
