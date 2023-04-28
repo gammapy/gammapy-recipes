@@ -11,8 +11,11 @@ import traceback
 from pathlib import Path
 
 from distutils.dir_util import copy_tree
-from gammapy.scripts.jupyter import notebook_run
 from nbformat.v4 import new_markdown_cell
+
+sys.path.append('scripts')
+from utils import notebook_run, notebook_black, notebook_strip
+
 
 log = logging.getLogger(__name__)
 PATH_FILLED = Path(__file__).resolve().parent / ".." / "docs" / "notebooks"
@@ -58,13 +61,9 @@ def add_box(nb_folder, nb_path):
 def clean_notebook(nb_path):
     """Code formatting and strip output."""
 
-    # clean
-    subprocess.run(
-        [sys.executable, "-m", "gammapy", "jupyter", "--src", nb_path, "black"]
-    )
-    subprocess.run(
-        [sys.executable, "-m", "gammapy", "jupyter", "--src", nb_path, "strip"]
-    )
+    notebook_black(nb_path)
+
+    notebook_strip(nb_path)
 
 
 def process_notebook(nb_path):
