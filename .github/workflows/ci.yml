@@ -61,4 +61,6 @@ jobs:
           commit_author: GitHub Actions <actions@github.com>
           commit_message: commit built documentation
           branch : master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
