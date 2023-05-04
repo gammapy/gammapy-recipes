@@ -5,8 +5,8 @@ channels:
   - conda-forge
 
 dependencies:
-  - gammapy=1.0
+  - gammapy=1.0.1
   - python=3.9
   - pip
   - pip:
-      - pint-pulsar~=0.9.3
+      - pint-pulsar~=0.9.5
