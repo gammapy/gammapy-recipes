@@ -1,26 +1,30 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gammapy &mdash; Gammapy recipes</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/gammapy.css" type="text/css" />
-      <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/gammapy.css?v=1b9ef150" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-gallery.css" />
+
+  
     <link rel="shortcut icon" href="_static/gammapy_logo.ico"/>
     <link rel="canonical" href="https://gammapy.orgindex.html"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -32,11 +36,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> Gammapy recipes
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Gammapy recipes
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -47,7 +55,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error">Flux Error</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-UL">Flux UL</a></li>
@@ -60,6 +68,18 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Pos.">NPred Error Pos.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Neg.">NPred Error Neg.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-UL">NPred UL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html">Phase computation for pulsar using PINT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#0.-Dependencies-and-imports">0. Dependencies and imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#1.-Reading-DataStore">1. Reading DataStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#2.-Phase-folding-with-PINT-for-one-observation">2. Phase-folding with PINT for one observation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#2.1-An-ephemeris-file-from-Fermi-LAT-data.">2.1 An ephemeris file from Fermi-LAT data.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#2.2-Computing-pulsar-phases">2.2 Computing pulsar phases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#3.-Adding-phases-and-metadata-to-an-EventList-and-put-it-in-a-new-Observation.">3. Adding phases and metadata to an EventList and put it in a new Observation.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#4.-Save-new-Event-List-and-writing-a-modify-HDU-index-table">4. Save new Event List and writing a modify HDU index table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#5.-Opening-the-new-DataStore">5. Opening the new DataStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html#6.-Pulsar-analysis-tools-with-gammapy">6. Pulsar analysis tools with gammapy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html">MCMC sampling using the emcee package</a><ul>
@@ -118,8 +138,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Gammapy</li>
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Gammapy</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -128,33 +148,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<a class="reference internal image-reference" href="_images/gammapy_banner.png" id="index"><img alt="_images/gammapy_banner.png" id="index" src="_images/gammapy_banner.png" style="width: 400px;" /></a>
+  <a class="reference internal image-reference" href="_images/gammapy_banner.png" id="index"><img alt="_images/gammapy_banner.png" id="index" src="_images/gammapy_banner.png" style="width: 400px;" /></a>
 <section id="gammapy">
-<h1>Gammapy<a class="headerlink" href="#gammapy" title="Permalink to this headline"></a></h1>
+<h1>Gammapy<a class="headerlink" href="#gammapy" title="Link to this heading"></a></h1>
 <p>Gammapy is a community-developed, open-source Python package for gamma-ray
 astronomy and core library for the <a class="reference external" href="https://www.cta-observatory.org">CTA Cherenkov Telescope Array</a>
 science tools.</p>
@@ -170,68 +166,35 @@ if you would like to contribute with your own recipes.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound" id="recipes">
+<p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
+<div class="nbsphinx-gallery">
+<a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">
+  <div><img alt="" src="./_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_12_1.png"></div>
+  <div>TSMapEstimator vs. ExcessMapEstimator</div>
+</a>
+<a class="reference internal" href="notebooks/pulsar_phase/pulsar_phase_computation.html">
+  <div><img alt="" src="./_static/nbsphinx-no-thumbnail.svg"></div>
+  <div>Phase computation for pulsar using PINT</div>
+</a>
+<a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html">
+  <div><img alt="" src="./_images/notebooks_mcmc-sampling-emcee_mcmc_sampling_19_0.png"></div>
+  <div>MCMC sampling using the emcee package</div>
+</a>
+<a class="reference internal" href="notebooks/interactive-model-editing/interactive-model-editing.html">
+  <div><img alt="" src="./_images/notebooks_interactive-model-editing_interactive-model-editing_5_0.png"></div>
+  <div>Recipe to show the interactively edit the Sky model on the notebook</div>
+</a>
+<a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html">
+  <div><img alt="" src="./_images/notebooks_dark-matter-utilities_astro_dark_matter_11_2.png"></div>
+  <div>Dark matter spatial and spectral models</div>
+</a>
+<a class="reference internal" href="notebooks/background-model/background_model.html" title="Build a background template using off runs supplied within the first H.E.S.S. data release.">
+  <div><img alt="" src="./_images/notebooks_background-model_background_model_22_0.png"></div>
+  <div>Create a template background model</div>
+</a>
 </div>
-<div class="sphx-glr-thumbcontainer">
-  <div class="figure align-center">
-    <img alt="thumbnail" src="./_images/notebooks_ts-vs-excess-map-estimator_ts-vs-exess-map-estimator_12_1.png" />
-    <p class="caption">
-      <span class="caption-text">
-        <a class="reference internal" href="notebooks/ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">
-          <span class="std std-ref">TSMapEstimator vs. ExcessMapEstimator</span>
-        </a>
-      </span>
-    </p>
-  </div>
 </div>
-<div class="sphx-glr-thumbcontainer">
-  <div class="figure align-center">
-    <img alt="thumbnail" src="./_images/notebooks_mcmc-sampling-emcee_mcmc_sampling_19_0.png" />
-    <p class="caption">
-      <span class="caption-text">
-        <a class="reference internal" href="notebooks/mcmc-sampling-emcee/mcmc_sampling.html">
-          <span class="std std-ref">MCMC sampling using the emcee package</span>
-        </a>
-      </span>
-    </p>
-  </div>
-</div>
-<div class="sphx-glr-thumbcontainer">
-  <div class="figure align-center">
-    <img alt="thumbnail" src="./_images/notebooks_interactive-model-editing_interactive-model-editing_5_0.png" />
-    <p class="caption">
-      <span class="caption-text">
-        <a class="reference internal" href="notebooks/interactive-model-editing/interactive-model-editing.html">
-          <span class="std std-ref">Recipe to show the interactively edit the Sky model on the notebook</span>
-        </a>
-      </span>
-    </p>
-  </div>
-</div>
-<div class="sphx-glr-thumbcontainer">
-  <div class="figure align-center">
-    <img alt="thumbnail" src="./_images/notebooks_dark-matter-utilities_astro_dark_matter_11_2.png" />
-    <p class="caption">
-      <span class="caption-text">
-        <a class="reference internal" href="notebooks/dark-matter-utilities/astro_dark_matter.html">
-          <span class="std std-ref">Dark matter spatial and spectral models</span>
-        </a>
-      </span>
-    </p>
-  </div>
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip="Build a background template using off runs supplied within the first H.E.S.S. data release.">
-  <div class="figure align-center">
-    <img alt="thumbnail" src="./_images/notebooks_background-model_background_model_22_0.png" />
-    <p class="caption">
-      <span class="caption-text">
-        <a class="reference internal" href="notebooks/background-model/background_model.html">
-          <span class="std std-ref">Create a template background model</span>
-        </a>
-      </span>
-    </p>
-  </div>
-</div>
-<div class="sphx-glr-clear"></div></section>
+</section>
 
 
            </div>
@@ -243,7 +206,7 @@ if you would like to contribute with your own recipes.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Gammapy recipes contributors.</p>
+    <p>&#169; Copyright 2024, Gammapy recipes contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
