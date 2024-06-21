@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.PAT }}
       - name: create and activate env
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -60,6 +58,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         if: github.event.pull_request.merged == true
         with:
+          token: ${{ secrets.PAT }}
           commit_author: GitHub Actions <actions@github.com>
           commit_message: commit built documentation
           branch : master
