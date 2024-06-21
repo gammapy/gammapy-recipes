@@ -8,13 +8,15 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
+    permissions:
+      contents: write
     env:
       GAMMAPY_DATA: /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: create and activate env
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-variant: Mambaforge
           miniforge-version: latest
@@ -22,7 +24,7 @@ jobs:
           environment-file: environment.yml
           auto-update-conda: true
       - id: grabmodifs
-        uses: trilom/file-changes-action@v1.2.3
+        uses: trilom/file-changes-action@v1.2.4
         with:
           output: ', '
       - name: update env and download data
@@ -55,10 +57,9 @@ jobs:
             cd docs && python -m sphinx . _build/html -b html && cd ..
             rm -Rf gammapy-datasets
       - name: commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         if: github.event.pull_request.merged == true
         with:
-          token: ${{ secrets.PAT }}
           commit_author: GitHub Actions <actions@github.com>
           commit_message: commit built documentation
           branch : master
