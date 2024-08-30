@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generating synthetic lightcurves and fitting the power spectral density of a lightcurve &mdash; Gammapy recipes</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/gammapy.css?v=1b9ef150" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
+    <link rel="canonical" href="https://gammapy.orgnotebooks/fit-psd-lightcurve/fit-psd-lightcurve.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Dark matter spatial and spectral models" href="../dark-matter-utilities/astro_dark_matter.html" />
+    <link rel="prev" title="Recipe to show the interactively edit the Sky model on the notebook" href="../interactive-model-editing/interactive-model-editing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Gammapy recipes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Recipes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html">TSMapEstimator vs. ExcessMapEstimator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux">Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error">Flux Error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-UL">Flux UL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Pos.">Flux Error Pos.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Flux-Error-Neg.">Flux Error Neg.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#Sqrt(TS)">Sqrt(TS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Excess">NPred Excess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Ref.">NPred Ref.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Err">NPred Err</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Pos.">NPred Error Pos.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-Error-Neg.">NPred Error Neg.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ts-vs-excess-map-estimator/ts-vs-exess-map-estimator.html#NPred-UL">NPred UL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html">Phase computation for pulsar using PINT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#0.-Dependencies-and-imports">0. Dependencies and imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#1.-Reading-DataStore">1. Reading DataStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#2.-Phase-folding-with-PINT-for-one-observation">2. Phase-folding with PINT for one observation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#2.1-An-ephemeris-file-from-Fermi-LAT-data.">2.1 An ephemeris file from Fermi-LAT data.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#2.2-Computing-pulsar-phases">2.2 Computing pulsar phases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#3.-Adding-phases-and-metadata-to-an-EventList-and-put-it-in-a-new-Observation.">3. Adding phases and metadata to an EventList and put it in a new Observation.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#4.-Save-new-Event-List-and-writing-a-modify-HDU-index-table">4. Save new Event List and writing a modify HDU index table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#5.-Opening-the-new-DataStore">5. Opening the new DataStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pulsar_phase/pulsar_phase_computation.html#6.-Pulsar-analysis-tools-with-gammapy">6. Pulsar analysis tools with gammapy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html">MCMC sampling using the emcee package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#How-does-it-work-?">How does it work ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Why-should-I-use-it-?">Why should I use it ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Simulate-an-observation">Simulate an observation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Estimate-parameter-correlations-with-MCMC">Estimate parameter correlations with MCMC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Define-priors">Define priors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Plot-the-results">Plot the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Plot-the-model-dispersion">Plot the model dispersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#Fun-Zone">Fun Zone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcmc-sampling-emcee/mcmc_sampling.html#PeVatrons-in-CTA-?">PeVatrons in CTA ?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../interactive-model-editing/interactive-model-editing.html">Recipe to show the interactively edit the Sky model on the notebook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../interactive-model-editing/interactive-model-editing.html#Load-the-changed-parameters-and-verify-that-the-model-has-been-updated">Load the changed parameters and verify that the model has been updated</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Generating synthetic lightcurves and fitting the power spectral density of a lightcurve</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Reference-Lightcurve">Reference Lightcurve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Simulation">Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Gammapy-setup-and-simulation">Gammapy setup and simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Fitting">Fitting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html">Dark matter spatial and spectral models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#Introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#Profiles">Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#J-Factors">J Factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#Gamma-ray-spectra-at-production">Gamma-ray spectra at production</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dark-matter-utilities/astro_dark_matter.html#Flux-maps">Flux maps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../background-model/background_model.html">Create a template background model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Context">Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Proposed-approach">Proposed approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Select-off-data">Select off data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Background-model">Background model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Zenith-dependence">Zenith dependence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Index-tables">Index tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../background-model/background_model.html#Exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Gammapy recipes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Generating synthetic lightcurves and fitting the power spectral density of a lightcurve</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="admonition note">
+<p class="admonition-title fa fa-exclamation-circle"><strong>This is a fixed-text formatted version of a Jupyter notebook</strong></p>
+<ul class="simple">
+<li><p><strong>Source files:</strong> <a class="reference external" href="../../_static/notebooks/fit-psd-lightcurve/fit-psd-lightcurve.ipynb">fit-psd-lightcurve.ipynb</a> | <a class="reference external" href="../../_static/notebooks/fit-psd-lightcurve/fit-psd-lightcurve.py">fit-psd-lightcurve.py</a></p></li>
+<li><p><strong>Environment:</strong> <a class="reference external" href="../../_static/notebooks/fit-psd-lightcurve/env.yml">env.yml</a></p></li>
+</ul>
+</div>
+<section id="Generating-synthetic-lightcurves-and-fitting-the-power-spectral-density-of-a-lightcurve">
+<h1>Generating synthetic lightcurves and fitting the power spectral density of a lightcurve<a class="headerlink" href="#Generating-synthetic-lightcurves-and-fitting-the-power-spectral-density-of-a-lightcurve" title="Link to this heading"></a></h1>
+<p>This notebook presents the advanced Emmanoulopoulos algorithm for the simulation of synthetic lightcurves. The original paper describing the algorithm is linked <a class="reference external" href="https://arxiv.org/pdf/1305.0304.pdf">here</a>. The version implemented here is compatible with the Gammapy implementation of the Timmer-Koenig algorithm. The Timmer-Koenig algorithm generates synthetic lightcurve from a chosen power spectral density (PSD) shape. However, it can only generate time series with a gaussian probability
+density function (PDF). This is adequate for high-statistics astrophysical domains such as the optical or X-rays, but can be in issue when trying to reproduce curves in the gamma-ray domain, where photon counts are lower and statistics are generally Poissonian. The Emmanoulopoulos algorithm tries to solve this issue, combining a requested PSD and PDF in the simulation. It provides accurate synthetic lightcurves in a range of spectral indexes between -1 and -2 for power-law or similar PSDs.</p>
+<p>Together with the simulation algorithm the notebook shows a function to compute the PSD envelope for a lightcurve using either the Timmer-Koenig or the Emmanoulopoulos algorithm. This envelope is then used to fit the PSD fot he observed lightcurve, by passing through a tailored chi-squared-like cost function. This complex fitting is necessary to account for the fact that the periodogram of the observed lightcurve is only a possible realization of the PSD model, moreover convoluted with
+Poissonian noise and instrumental responses. This can lead to biases or deformation due to random fluctuation of the realization if extracted with a simple curve fit of the periodogram.</p>
+<p>The results are satisfactory for power-law or broken-power-law PSDs in a physical interval of spectral indexes, between -1 and -2. Using the Emmanoulopoulos algorithm shows consistently better PSD reconstruction over the Timmer-Koenig - this is due to the injected non-gaussian PDF.</p>
+<p>The functions for the Timmer-Koenig and Emmanoulopoulos algorithms, the envelope, x2-like cost function for fitting, and some helper analytical functions are implemented in the helper package <code class="docutils literal notranslate"><span class="pre">gammapy_SyLC</span></code>.</p>
+<section id="Imports">
+<h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading"></a></h2>
+<p>The first step is importing some usual packages, needed Astropy utilities, scipy tools for PDFs and minimization, and Gammapy functions and classes for the observational part.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gammapy</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gammapy version : </span><span class="si">{</span><span class="n">gammapy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Gammapy version : 1.2
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">AltAz</span>
+
+<span class="kn">from</span> <span class="nn">regions</span> <span class="kn">import</span> <span class="n">PointSkyRegion</span>
+
+<span class="kn">from</span> <span class="nn">gammapy.estimators</span> <span class="kn">import</span> <span class="n">LightCurveEstimator</span><span class="p">,</span> <span class="n">FluxPoints</span>
+<span class="kn">from</span> <span class="nn">gammapy.makers</span> <span class="kn">import</span> <span class="n">SpectrumDatasetMaker</span>
+<span class="kn">from</span> <span class="nn">gammapy.data</span> <span class="kn">import</span> <span class="n">Observation</span><span class="p">,</span> <span class="n">observatory_locations</span><span class="p">,</span> <span class="n">FixedPointingInfo</span>
+<span class="kn">from</span> <span class="nn">gammapy.datasets</span> <span class="kn">import</span> <span class="n">Datasets</span><span class="p">,</span> <span class="n">SpectrumDataset</span>
+<span class="kn">from</span> <span class="nn">gammapy.irf</span> <span class="kn">import</span> <span class="n">load_irf_dict_from_file</span>
+<span class="kn">from</span> <span class="nn">gammapy.maps</span> <span class="kn">import</span> <span class="n">MapAxis</span><span class="p">,</span> <span class="n">RegionGeom</span><span class="p">,</span> <span class="n">TimeMapAxis</span><span class="p">,</span> <span class="n">RegionNDMap</span>
+<span class="kn">from</span> <span class="nn">gammapy.modeling.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SkyModel</span><span class="p">,</span>
+    <span class="n">PowerLawSpectralModel</span><span class="p">,</span>
+    <span class="n">LightCurveTemplateTemporalModel</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gammapy.estimators.utils</span> <span class="kn">import</span> <span class="n">compute_lightcurve_fvar</span>
+<span class="kn">from</span> <span class="nn">gammapy.utils.random</span> <span class="kn">import</span> <span class="n">get_random_state</span>
+
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">periodogram</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">lognorm</span>
+</pre></div>
+</div>
+</div>
+<p>Additionally, we import the necessary functions for lightcurve simulation and fitting from the helper package <a class="reference external" href="https://github.com/cgalelli/gammapy_SyLC">gammapy_SyLC</a>. The package can be obtained from github and installed by running:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/cgalelli/gammapy_SyLC.git</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">gammapy_SyLC</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gammapy_SyLC</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TimmerKonig_lightcurve_simulator</span><span class="p">,</span>
+    <span class="n">Emmanoulopoulos_lightcurve_simulator</span><span class="p">,</span>
+    <span class="n">lightcurve_psd_envelope</span><span class="p">,</span>
+    <span class="n">x2_fit</span><span class="p">,</span>
+    <span class="n">pl</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Reference-Lightcurve">
+<h2>Reference Lightcurve<a class="headerlink" href="#Reference-Lightcurve" title="Link to this heading"></a></h2>
+<p>As a reference, the notebook uses the H.E.S.S. dataset for the PKS2155 AGN flare of 2006. Data properties such as mean and standard deviation fo the norm, number of points, sampling frequency, are taken from this flare. The synthetic lightcurve will be oversampled by a factor 10.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;$GAMMAPY_DATA/estimators/&quot;</span><span class="p">)</span>
+<span class="n">lc_filename</span> <span class="o">=</span> <span class="s2">&quot;pks2155_hess_lc/pks2155_hess_lc.fits&quot;</span>
+
+<span class="n">lc</span> <span class="o">=</span> <span class="n">FluxPoints</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lc_path</span> <span class="o">/</span> <span class="n">lc_filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;lightcurve&quot;</span><span class="p">)</span>
+<span class="n">odata</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">omean</span> <span class="o">=</span> <span class="n">odata</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ostd</span> <span class="o">=</span> <span class="n">odata</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">npoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lc</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">edges</span>
+<span class="n">tref</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">reference_time</span>
+<span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="mi">10</span>
+<span class="n">lc</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_8_0.png" src="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_8_0.png" />
+</div>
+</div>
+</section>
+<section id="Simulation">
+<h2>Simulation<a class="headerlink" href="#Simulation" title="Link to this heading"></a></h2>
+<p>As a first step, the parameters for the functions used as models in the simulations are setup here:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ln_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">pl_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>Both the TK and EMM algorithms are called with the same power-law PSD. The EMM algorithm uses a lognormal PDF. The difference between TK and EMM algorithms is shown in the leftmost and rightmost plot, where the gaussian vs lognormal shape is evident. The middle plot shows the perfect compatibility in the periodogram. Seed is fixed for reproducibility.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">532019</span>
+<span class="c1"># seed = &quot;random-seed&quot;</span>
+<span class="n">lctk2</span><span class="p">,</span> <span class="n">taxis2</span> <span class="o">=</span> <span class="n">Emmanoulopoulos_lightcurve_simulator</span><span class="p">(</span>
+    <span class="n">lognorm</span><span class="o">.</span><span class="n">pdf</span><span class="p">,</span>
+    <span class="n">pl</span><span class="p">,</span>
+    <span class="n">npoints</span><span class="p">,</span>
+    <span class="n">smax</span><span class="p">,</span>
+    <span class="n">pdf_params</span><span class="o">=</span><span class="n">ln_params</span><span class="p">,</span>
+    <span class="n">psd_params</span><span class="o">=</span><span class="n">pl_params</span><span class="p">,</span>
+    <span class="n">mean</span><span class="o">=</span><span class="n">omean</span><span class="p">,</span>
+    <span class="n">std</span><span class="o">=</span><span class="n">ostd</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">lctk</span><span class="p">,</span> <span class="n">taxis</span> <span class="o">=</span> <span class="n">TimmerKonig_lightcurve_simulator</span><span class="p">(</span>
+    <span class="n">pl</span><span class="p">,</span>
+    <span class="n">npoints</span><span class="p">,</span>
+    <span class="n">smax</span><span class="p">,</span>
+    <span class="n">power_spectrum_params</span><span class="o">=</span><span class="n">pl_params</span><span class="p">,</span>
+    <span class="n">mean</span><span class="o">=</span><span class="n">omean</span><span class="p">,</span>
+    <span class="n">std</span><span class="o">=</span><span class="n">ostd</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">freqstk</span><span class="p">,</span> <span class="n">pgramtk</span> <span class="o">=</span> <span class="n">periodogram</span><span class="p">(</span><span class="n">lctk</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">smax</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="n">freqstk2</span><span class="p">,</span> <span class="n">pgramtk2</span> <span class="o">=</span> <span class="n">periodogram</span><span class="p">(</span><span class="n">lctk2</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">smax</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">taxis</span><span class="p">,</span> <span class="n">lctk</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">freqstk</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">pgramtk</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">lctk</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">taxis2</span><span class="p">,</span> <span class="n">lctk2</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">freqstk2</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">pgramtk2</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">lctk2</span><span class="p">)</span>
+<span class="n">coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">freqstk</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pgramtk</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">coeff2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">freqstk2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pgramtk2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">coeff2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[-1.47301407 -7.35992191] [-1.41604412 -6.92936994]
+CPU times: user 105 ms, sys: 8.16 ms, total: 113 ms
+Wall time: 113 ms
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_12_1.png" src="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_12_1.png" />
+</div>
+</div>
+</section>
+<section id="Gammapy-setup-and-simulation">
+<h2>Gammapy setup and simulation<a class="headerlink" href="#Gammapy-setup-and-simulation" title="Link to this heading"></a></h2>
+<p>Setup of geometry for the Gammapy simulation. Generic setup for pointing, energy binning, and IRFs. For realistic simulations, choose IRFs that are consistent with the instrument and observational conditions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">TimeMapAxis</span><span class="o">.</span><span class="n">time_format</span> <span class="o">=</span> <span class="s2">&quot;iso&quot;</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;$GAMMAPY_DATA/cta-caldb&quot;</span><span class="p">)</span>
+<span class="n">irf_filename</span> <span class="o">=</span> <span class="s2">&quot;Prod5-South-20deg-AverageAz-14MSTs37SSTs.180000s-v0.1.fits.gz&quot;</span>
+
+<span class="n">irfs</span> <span class="o">=</span> <span class="n">load_irf_dict_from_file</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="n">irf_filename</span><span class="p">)</span>
+
+<span class="n">energy_axis</span> <span class="o">=</span> <span class="n">MapAxis</span><span class="o">.</span><span class="n">from_energy_bounds</span><span class="p">(</span>
+    <span class="n">energy_min</span><span class="o">=</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="p">,</span> <span class="n">energy_max</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="n">energy_axis_true</span> <span class="o">=</span> <span class="n">MapAxis</span><span class="o">.</span><span class="n">from_edges</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;TeV&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;energy_true&quot;</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s2">&quot;log&quot;</span>
+<span class="p">)</span>
+
+<span class="n">time_axis</span> <span class="o">=</span> <span class="n">MapAxis</span><span class="o">.</span><span class="n">from_nodes</span><span class="p">(</span><span class="n">taxis</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s2">&quot;lin&quot;</span><span class="p">)</span>
+
+<span class="n">geom</span> <span class="o">=</span> <span class="n">RegionGeom</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="s2">&quot;galactic;circle(107.65, -40.17, 5)&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="n">energy_axis</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">pointing_position</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mf">107.65</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.17</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">)</span>
+<span class="n">pointing</span> <span class="o">=</span> <span class="n">FixedPointingInfo</span><span class="p">(</span>
+    <span class="n">fixed_icrs</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="mf">107.65</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.17</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">icrs</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The time series generated via EMM is taken as a LightCurveTemplateTemporalModel</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gti_t0</span> <span class="o">=</span> <span class="n">tref</span>
+
+<span class="n">spectral_model</span> <span class="o">=</span> <span class="n">PowerLawSpectralModel</span><span class="p">(</span>
+    <span class="n">amplitude</span><span class="o">=</span><span class="mf">1e-10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="o">**-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="o">**-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**-</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">RegionNDMap</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">region</span><span class="o">=</span><span class="n">PointSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">pointing_position</span><span class="p">),</span>
+    <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="n">time_axis</span><span class="p">],</span>
+    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;cm-2s-1TeV-1&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">quantity</span> <span class="o">=</span> <span class="n">lctk2</span>
+
+<span class="n">temporal_model</span> <span class="o">=</span> <span class="n">LightCurveTemplateTemporalModel</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t_ref</span><span class="o">=</span><span class="n">gti_t0</span><span class="p">)</span>
+
+<span class="n">model_simu</span> <span class="o">=</span> <span class="n">SkyModel</span><span class="p">(</span>
+    <span class="n">spectral_model</span><span class="o">=</span><span class="n">spectral_model</span><span class="p">,</span>
+    <span class="n">temporal_model</span><span class="o">=</span><span class="n">temporal_model</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model-simu&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Observation timing setup and simulation fo the datasets. The “observational” sampling is taken to be much sparser than the synthetic lightcurve, to avoid aliasing.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lvtm</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">min</span>
+<span class="n">tstart</span> <span class="o">=</span> <span class="n">gti_t0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">npoints</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">lvtm</span>
+<span class="n">altaz</span> <span class="o">=</span> <span class="n">pointing_position</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
+    <span class="n">AltAz</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">observatory_locations</span><span class="p">[</span><span class="s2">&quot;cta_south&quot;</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">datasets</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">()</span>
+
+<span class="n">empty</span> <span class="o">=</span> <span class="n">SpectrumDataset</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">geom</span><span class="o">=</span><span class="n">geom</span><span class="p">,</span> <span class="n">energy_axis_true</span><span class="o">=</span><span class="n">energy_axis_true</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;empty&quot;</span>
+<span class="p">)</span>
+
+<span class="n">maker</span> <span class="o">=</span> <span class="n">SpectrumDatasetMaker</span><span class="p">(</span><span class="n">selection</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;exposure&quot;</span><span class="p">,</span> <span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="s2">&quot;edisp&quot;</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tstart</span><span class="p">)):</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">Observation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">pointing</span><span class="o">=</span><span class="n">pointing</span><span class="p">,</span>
+        <span class="n">livetime</span><span class="o">=</span><span class="n">lvtm</span><span class="p">,</span>
+        <span class="n">tstart</span><span class="o">=</span><span class="n">tstart</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">irfs</span><span class="o">=</span><span class="n">irfs</span><span class="p">,</span>
+        <span class="n">reference_time</span><span class="o">=</span><span class="n">gti_t0</span><span class="p">,</span>
+        <span class="n">obs_id</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
+        <span class="n">location</span><span class="o">=</span><span class="n">observatory_locations</span><span class="p">[</span><span class="s2">&quot;cta_south&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">empty_i</span> <span class="o">=</span> <span class="n">empty</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;dataset-</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">maker</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">empty_i</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
+    <span class="n">dataset</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">model_simu</span>
+    <span class="n">dataset</span><span class="o">.</span><span class="n">fake</span><span class="p">()</span>
+    <span class="n">datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+
+<span class="n">spectral_model</span> <span class="o">=</span> <span class="n">PowerLawSpectralModel</span><span class="p">(</span>
+    <span class="n">amplitude</span><span class="o">=</span><span class="mf">7e-11</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="o">**-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="o">**-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**-</span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="n">model_fit</span> <span class="o">=</span> <span class="n">SkyModel</span><span class="p">(</span><span class="n">spectral_model</span><span class="o">=</span><span class="n">spectral_model</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model-fit&quot;</span><span class="p">)</span>
+<span class="n">datasets</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">model_fit</span>
+</pre></div>
+</div>
+</div>
+<p>Lightcurve estimator setup and run.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc_maker_1d</span> <span class="o">=</span> <span class="n">LightCurveEstimator</span><span class="p">(</span>
+    <span class="n">energy_edges</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">TeV</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;model-fit&quot;</span><span class="p">,</span>
+    <span class="n">selection_optional</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ul&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">lc_1d</span> <span class="o">=</span> <span class="n">lc_maker_1d</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span>
+<span class="n">lc_1d</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_21_0.png" src="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_21_0.png" />
+</div>
+</div>
+<p>Assessment of the properties of the “observed” lightcurve in the time and frequency domain.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">lc_1d</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">dmean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">dstd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">dnpoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">dtimes</span> <span class="o">=</span> <span class="n">lc_1d</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">edges</span>
+<span class="n">dsmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dtimes</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">ffreqs</span><span class="p">,</span> <span class="n">pgram</span> <span class="o">=</span> <span class="n">periodogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">dsmax</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="n">coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">ffreqs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pgram</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ffreqs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">pgram</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-2.0837448779604903
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7f1f01554610&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_23_2.png" src="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_23_2.png" />
+</div>
+</div>
+<section id="Fitting">
+<h3>Fitting<a class="headerlink" href="#Fitting" title="Link to this heading"></a></h3>
+<p>The x2_fit function is used as a cost function with the scipy minimizer, providing a fit of the spectral index for the “observed” lightcurve assuming a power-law PSD.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">initial_pars</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">x2_fit</span><span class="p">,</span>
+    <span class="n">initial_pars</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">pgram</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="n">dnpoints</span><span class="p">,</span>
+        <span class="n">dsmax</span><span class="p">,</span>
+        <span class="n">pl</span><span class="p">,</span>
+        <span class="n">lognorm</span><span class="o">.</span><span class="n">pdf</span><span class="p">,</span>
+        <span class="n">ln_params</span><span class="p">,</span>
+        <span class="s2">&quot;EMM&quot;</span><span class="p">,</span>
+        <span class="mi">10000</span><span class="p">,</span>
+        <span class="n">dmean</span><span class="p">,</span>
+        <span class="n">dstd</span><span class="p">,</span>
+        <span class="kc">False</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;Powell&quot;</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;disp&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="n">envelopes</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">lightcurve_psd_envelope</span><span class="p">(</span>
+    <span class="n">pl</span><span class="p">,</span>
+    <span class="n">dnpoints</span><span class="p">,</span>
+    <span class="n">dsmax</span><span class="p">,</span>
+    <span class="n">psd_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">},</span>
+    <span class="n">simulator</span><span class="o">=</span><span class="s2">&quot;EMM&quot;</span><span class="p">,</span>
+    <span class="n">pdf</span><span class="o">=</span><span class="n">lognorm</span><span class="o">.</span><span class="n">pdf</span><span class="p">,</span>
+    <span class="n">pdf_params</span><span class="o">=</span><span class="n">ln_params</span><span class="p">,</span>
+    <span class="n">nsims</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">mean</span><span class="o">=</span><span class="n">dmean</span><span class="p">,</span>
+    <span class="n">std</span><span class="o">=</span><span class="n">dstd</span><span class="p">,</span>
+    <span class="n">poisson</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">envelopes</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">showmedians</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span> <span class="n">pgram</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Optimization terminated successfully.
+         Current function value: 0.592600
+         Iterations: 2
+         Function evaluations: 34
+ message: Optimization terminated successfully.
+ success: True
+  status: 0
+     fun: 0.5926
+       x: [-1.579e+00]
+     nit: 2
+   direc: [[ 1.000e+00]]
+    nfev: 34
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_25_1.png" src="../../_images/notebooks_fit-psd-lightcurve_fit-psd-lightcurve_25_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 24min 21s, sys: 2.25 s, total: 24min 24s
+Wall time: 24min 24s
+</pre></div></div>
+</div>
+<p>Recipe by <a class="reference external" href="https://github.com/cgalelli/">Claudio Galelli</a></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../interactive-model-editing/interactive-model-editing.html" class="btn btn-neutral float-left" title="Recipe to show the interactively edit the Sky model on the notebook" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../dark-matter-utilities/astro_dark_matter.html" class="btn btn-neutral float-right" title="Dark matter spatial and spectral models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Gammapy recipes contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
