@@ -8,8 +8,8 @@
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/gammapy.css?v=1b9ef150" />
-      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
-      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="../../_static/gammapy_logo.ico"/>
@@ -161,19 +161,19 @@
 <section id="Phase-computation-for-pulsar-using-PINT">
 <h1>Phase computation for pulsar using PINT<a class="headerlink" href="#Phase-computation-for-pulsar-using-PINT" title="Link to this heading"></a></h1>
 <p>This notebook has been done for the following version of Gammapy and PINT:</p>
-<p>Gammapy version : 1.0.1</p>
-<p>PINT version : 0.9.5</p>
+<p>Gammapy version : 1.2</p>
+<p>PINT version : 1.0</p>
 <p>This notebook shows how to compute and add the phase information into the events files of pulsar observations. This step is needed to perform the pulsar analysis with Gammapy and should be the first step in the high level analysis. For the pulsar analysis we need two ingredients:</p>
 <ol class="arabic simple">
 <li><p>The time of arrivals (TOAs). These times should have very high precision due to the common fast periods of pulsars. Usually these times are already stored in the EventList. For the computation of pulsar timing, times must be corrected in order to be referenced in the Solar System barycenter (SSB) because this system can nearly be regarded as an inertial reference frame with respect to the pulsar.</p></li>
-<li><p>The model of rotation of the pulsar, also known as ephemeris, at the epoch of the observations. These ephemerides are stored in an specific format and saved as .par files and contain informations on the periods, derivatives of the periods, coordinates, glitches, etc.</p></li>
+<li><p>The model of rotation of the pulsar, also known as ephemeris, at the epoch of the observations. These ephemerides are stored in a specific format and saved as .par files which contain the periods, derivatives of the periods, coordinates, glitches, etc.</p></li>
 </ol>
 <p><strong>For the following steps of this tutorial, we need the original EventLists from the DL3 files, and a model in .par format.</strong></p>
 <p>The main software that we will use to make the barycentric corrections and the phase-folding to the model is the PINT python library, <a class="reference external" href="https://arxiv.org/abs/2012.00074">Luo J., Ransom S. et al., 2021</a>, <a class="reference external" href="http://ascl.net/1902.007">ASCL</a>. For more information about this package, see <a class="reference external" href="https://nanograv-pint.readthedocs.io/en/latest/">PINT documentation</a>.</p>
 <section id="0.-Dependencies-and-imports">
 <h2>0. Dependencies and imports<a class="headerlink" href="#0.-Dependencies-and-imports" title="Link to this heading"></a></h2>
-<p>In order to run this notebook, one needs to have installed Gammapy as well as PINT (see documentation above) in the same environment. We recommend to first install Gammapy and then install PINT using your prefered package manager.</p>
-<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">gammapy-pint</span> <span class="pre">-f</span> <span class="pre">gammapy-1.0-environment.yml</span></code></p>
+<p>To run this notebook, you must have Gammapy and PINT (see documentation above) installed in the same environment. We recommend installing Gammapy first and then installing PINT using your preferred package manager.</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">gammapy-pint</span> <span class="pre">-f</span> <span class="pre">gammapy-pint-environment.yml</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">gammapy-pint</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pint-pulsar</span></code></p>
 <p>Alternatively, one can also run the yaml environement file provided in the folder of this notebook:</p>
@@ -195,8 +195,8 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Gammapy version : 1.0.2
-PINT version : 0.9.8
+Gammapy version : 1.2
+PINT version : 1.0.1
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -209,10 +209,13 @@ PINT version : 0.9.8
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">gammapy.data</span> <span class="kn">import</span> <span class="n">DataStore</span><span class="p">,</span> <span class="n">EventList</span><span class="p">,</span> <span class="n">Observation</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>And we also need some imports from PINT:</p>
+<p>We also need some imports from PINT:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -225,13 +228,13 @@ PINT version : 0.9.8
 </section>
 <section id="1.-Reading-DataStore">
 <h2>1. Reading DataStore<a class="headerlink" href="#1.-Reading-DataStore" title="Link to this heading"></a></h2>
-<p>First we neeed to define the data sample. In this notebook we will use two runs from the MAGIC gammapy data sample available in <a class="reference external" href="https://github.com/gammapy/gammapy-data">https://github.com/gammapy/gammapy-data</a></p>
+<p>First we need to define the data sample. In this notebook we will use two runs from the MAGIC gammapy data sample available in <a class="reference external" href="https://github.com/gammapy/gammapy-data">https://github.com/gammapy/gammapy-data</a></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the directory containing the DL3 data</span>
-<span class="n">DL3_direc</span> <span class="o">=</span> <span class="s2">&quot;$GAMMAPY_DATA/magic/rad_max/data&quot;</span>
+<span class="n">DL3_dir</span> <span class="o">=</span> <span class="s2">&quot;$GAMMAPY_DATA/magic/rad_max/data&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -240,7 +243,7 @@ PINT version : 0.9.8
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read DataStore from a directory</span>
-<span class="n">data_store</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">from_dir</span><span class="p">(</span><span class="n">DL3_direc</span><span class="p">)</span>
+<span class="n">data_store</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">from_dir</span><span class="p">(</span><span class="n">DL3_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -249,9 +252,7 @@ PINT version : 0.9.8
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_pos</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
-    <span class="n">ra</span><span class="o">=</span><span class="mf">083.6331144560900</span><span class="p">,</span> <span class="n">dec</span><span class="o">=+</span><span class="mf">22.0144871383400</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_pos</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mf">083.633</span><span class="p">,</span> <span class="n">dec</span><span class="o">=+</span><span class="mf">22.014</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -359,23 +360,24 @@ Observation
  56569.19487703 56569.19487876]
 </pre></div></div>
 </div>
-<p>Now we have the TOAs of the events in the system of the telescope. Please note that the actual precision of the times is higher than the diplayed output (and we really need this precision for the pulsar analysis!). In the next step, the timing in the SSB and the phase for each TOA has to be created.</p>
+<p>Now we have the TOAs for the events in the system of the telescope. Please note: the actual precision of the times is higher than the displayed output (and we really need this precision for the pulsar analysis!). In the next step, the timing in the SSB and the phase for each TOA has to be created.</p>
 </section>
 <section id="2.1-An-ephemeris-file-from-Fermi-LAT-data.">
 <h2>2.1 An ephemeris file from Fermi-LAT data.<a class="headerlink" href="#2.1-An-ephemeris-file-from-Fermi-LAT-data." title="Link to this heading"></a></h2>
-<p>In order to compute the phases of a pulsar, one needs an ephemeris file, usually store as a .par file.</p>
+<p>In order to compute the phases of a pulsar, one needs an ephemeris file, typically stored as a .par file.</p>
 <p>In the following, we will use an ephemeris file for the Crab provided by Fermi-LAT, see <a class="reference external" href="https://arxiv.org/abs/1510.05099">Kerr, M.; Ray, P. S.; et al; 2015</a>. This ephemeris file for the Crab pulsar can be found alongside other pulsar ephemeris files at this <a class="reference external" href="https://confluence.slac.stanford.edu/display/GLAMCOG/LAT+Gamma-ray+Pulsar+Timing+Models">confluence page</a>.</p>
-<p>However, be aware that most of these ephemeris files are not up-to-date. Therefore they could give bad results on the phase computation. In particular, one should always checked that the MJD of the observations one wants to phased lies between the <code class="docutils literal notranslate"><span class="pre">START</span></code>and <code class="docutils literal notranslate"><span class="pre">FINISH</span></code>entry of the ephemeris file.</p>
+<p>However, it is important to note that many of the ephemeris files are not up-to-date. Therefore, they could give bad results on the phase computation. In particular, you should always check that the MJD of the observations one wants to phase lies between the <code class="docutils literal notranslate"><span class="pre">START</span></code> and <code class="docutils literal notranslate"><span class="pre">FINISH</span></code> entries of the ephemeris file (see next section).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Path to the ephemeris file</span>
-<span class="n">ephemeris_file</span> <span class="o">=</span> <span class="s2">&quot;./0534+2200_ApJ_708_1254_2010.par&quot;</span>
+<span class="n">ephemeris_file</span> <span class="o">=</span> <span class="s2">&quot;0534+2200_ApJ_708_1254_2010.par&quot;</span>
 </pre></div>
 </div>
 </div>
-<p>Note that sometimes one needs to change some of the parameters of the ephemeris file that are not used in gamma-ray astronomy by hand. For instance, here we have removed the ‘JUMP’ line since it does not have any effect in our computation and raise an error in PINT. The ephemeris file provided with this notebook does not have this line.</p>
+<p>Note that <em>Fermi</em>-LAT ephemeris files are created primarily by and for <a class="reference external" href="https://www.pulsarastronomy.net/pulsar/software/tempo2">Tempo2</a>. Most of the time, using such ephemeris file with PINT will not raise any issues. However, in a few cases, PINT does not support features from Tempo2.</p>
+<p>In our case, an error occurs when using the ephemeris file with PINT. This is due to the <code class="docutils literal notranslate"><span class="pre">JUMP</span></code> line. To proceed, simply comment out the line (with #) or remove it. Note that this line is not important for the gamma-ray instruments, so it is acceptable to disregard it.</p>
 </section>
 <section id="2.2-Computing-pulsar-phases">
 <h2>2.2 Computing pulsar phases<a class="headerlink" href="#2.2-Computing-pulsar-phases" title="Link to this heading"></a></h2>
@@ -399,10 +401,10 @@ Observation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-green-fg">2024-03-27 11:26:26.901</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">validate</span>:<span class="ansi-cyan-fg">74</span> - <span class="ansi-bold">TZRFRQ was 0.0 or None. Setting to infinite frequency.</span>
-/usr/share/miniconda3/envs/gammapy-recipes/lib/python3.9/site-packages/pint/models/model_builder.py:198: UserWarning: Unrecognized parfile line &#39;EPHVER 5&#39;
+<span class="ansi-green-fg">2024-08-30 13:43:54.870</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">validate</span>:<span class="ansi-cyan-fg">77</span> - <span class="ansi-bold">TZRFRQ was 0.0 or None. Setting to infinite frequency.</span>
+/home/runner/miniconda3/envs/gammapy-recipes/lib/python3.11/site-packages/pint/models/model_builder.py:230: UserWarning: Unrecognized parfile line &#39;EPHVER 5&#39;
   warnings.warn(f&#34;Unrecognized parfile line &#39;{p_line}&#39;&#34;, UserWarning)
-<span class="ansi-green-fg">2024-03-27 11:26:26.903</span> | <span class="ansi-yellow-intense-fg ansi-bold">WARNING </span> | <span class="ansi-cyan-fg">pint.models.model_builder</span>:<span class="ansi-cyan-fg">__call__</span>:<span class="ansi-cyan-fg">202</span> - <span class="ansi-yellow-intense-fg ansi-bold">UNITS is not specified. Assuming TDB...</span>
+<span class="ansi-green-fg">2024-08-30 13:43:54.872</span> | <span class="ansi-yellow-intense-fg ansi-bold">WARNING </span> | <span class="ansi-cyan-fg">pint.models.model_builder</span>:<span class="ansi-cyan-fg">__call__</span>:<span class="ansi-cyan-fg">234</span> - <span class="ansi-yellow-intense-fg ansi-bold">UNITS is not specified. Assuming TDB...</span>
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -435,15 +437,77 @@ Spindown(
     floatParameter( F3                  -8.6724769747827286635e-31 (Hz / s3) +/- 0.0 Hz / s3 frozen=True))
 </pre></div></div>
 </div>
-<p>There are multiple parameters such as the name of the source, the interval of validity of the model (START to FINISH), the frequencies of rotation and its derivatives (F0,F1,F2). There are other additional parameters that can be checked in the <a class="reference external" href="https://nanograv-pint.readthedocs.io">PINT documentation</a></p>
-<p>Now we can compute the phases. For that, we define a list of TOA objects that are the main object of PINT.</p>
+<p>There are multiple parameters such as the name of the source, the frequencies of rotation and its derivatives (F0,F1,F2), the dispersion measure, etc. Check the <a class="reference external" href="https://nanograv-pint.readthedocs.io">PINT documentation</a> for a list of additional parameters. To obtain the complete set of parameters from the ephemeris file, one can simply print the model: <code class="docutils literal notranslate"><span class="pre">print(model)</span></code></p>
+<p>As mentioned previously, we should ensure the time of the observation lies within the ephemeris time definition. In our example, we only have one run, so we can check that manually:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Ephemeris time definition:</span><span class="se">\n</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">START</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">FINISH</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Observation time definition:</span><span class="se">\n</span><span class="si">{</span><span class="n">observation</span><span class="o">.</span><span class="n">tstart</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">observation</span><span class="o">.</span><span class="n">tstop</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Ephemeris time definition:
+54686.1526259 - 56583.1591704
+Observation time definition:
+56569.18112772242 - 56569.19487901596
+</pre></div></div>
+</div>
+<p>If you have several observations that are sorted by time, you can manually check for the start time of the first observation and the stop time of the last one. Otherwise, you can create a small function like the following one:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">check_time</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">timing_model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that the observation time lies within the time definition of the pulsar</span>
+<span class="sd">    timing model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    observation: `gammapy.data.Observation`</span>
+<span class="sd">        Observation to check.</span>
+<span class="sd">    timing_model: `pint.models.TimingModel`</span>
+<span class="sd">        The timing model that will be used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">START</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">FINISH</span><span class="o">.</span><span class="n">value</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;tt&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;mjd&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">model_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">observation</span><span class="o">.</span><span class="n">tstart</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">mjd</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">model_time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">observation</span><span class="o">.</span><span class="n">tstop</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">mjd</span>
+    <span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Warning: Observation time of observation </span><span class="si">{</span><span class="n">observation</span><span class="o">.</span><span class="n">obs_id</span><span class="si">}</span><span class="s2"> goes out of timing model validity time.&quot;</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">check_time</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now we can compute the phases. For that, we define a list of TOA objects that are the main object of PINT.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
 
-<span class="c1"># Put these to True is your observatory has clock correction files.</span>
+<span class="c1"># Set these to True is your observatory has clock correction files.</span>
 <span class="c1"># If it is set to True but your observatory does not have clock correction files, it will be ignored.</span>
 <span class="n">include_bipm</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">include_gps</span> <span class="o">=</span> <span class="kc">False</span>
@@ -470,16 +534,23 @@ Spindown(
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-green-fg">2024-03-27 11:26:27.247</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">1358</span> - <span class="ansi-blue-intense-fg ansi-bold">No pulse number flags found in the TOAs</span>
-<span class="ansi-green-fg">2024-03-27 11:26:27.263</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">apply_clock_corrections</span>:<span class="ansi-cyan-fg">2200</span> - <span class="ansi-blue-intense-fg ansi-bold">Applying clock corrections (include_gps = False, include_bipm = False)</span>
-<span class="ansi-green-fg">2024-03-27 11:26:27.923</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory.topo_obs</span>:<span class="ansi-cyan-fg">clock_corrections</span>:<span class="ansi-cyan-fg">365</span> - <span class="ansi-bold">Observatory magic requires no clock corrections.</span>
-<span class="ansi-green-fg">2024-03-27 11:26:31.192</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2251</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing TDB columns.</span>
-<span class="ansi-green-fg">2024-03-27 11:26:31.193</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2272</span> - <span class="ansi-blue-intense-fg ansi-bold">Using EPHEM = DE421 for TDB calculation.</span>
-<span class="ansi-green-fg">2024-03-27 11:26:32.378</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2350</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing PosVels of observatories and Earth, using DE421</span>
-<span class="ansi-green-fg">2024-03-27 11:26:33.420</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.359</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2403</span> - <span class="ansi-blue-intense-fg ansi-bold">SSB obs pos [1.47007462e+11 2.56889811e+10 1.11245045e+10] m</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.587</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.593</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2417</span> - <span class="ansi-blue-intense-fg ansi-bold">Adding columns ssb_obs_pos ssb_obs_vel obs_sun_pos</span>
+<span class="ansi-green-fg">2024-08-30 13:43:55.618</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">1377</span> - <span class="ansi-blue-intense-fg ansi-bold">No pulse number flags found in the TOAs</span>
+<span class="ansi-green-fg">2024-08-30 13:43:55.633</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">apply_clock_corrections</span>:<span class="ansi-cyan-fg">2224</span> - <span class="ansi-blue-intense-fg ansi-bold">Applying clock corrections (include_bipm = False)</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.294</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory</span>:<span class="ansi-cyan-fg">gps_correction</span>:<span class="ansi-cyan-fg">248</span> - <span class="ansi-bold">Applying GPS to UTC clock correction (~few nanoseconds)</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.294</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.observatory</span>:<span class="ansi-cyan-fg">_load_gps_clock</span>:<span class="ansi-cyan-fg">122</span> - <span class="ansi-blue-intense-fg ansi-bold">Loading global GPS clock file</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.297</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory.global_clock_corrections</span>:<span class="ansi-cyan-fg">get_file</span>:<span class="ansi-cyan-fg">128</span> - <span class="ansi-bold">File index.txt to be downloaded due to download policy if_expired: https://raw.githubusercontent.com/ipta/pulsar-clock-corrections/main/index.txt</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.451</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.observatory.clock_file</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">812</span> - <span class="ansi-blue-intense-fg ansi-bold">Global clock file gps2utc.clk saving kwargs={&#39;bogus_last_correction&#39;: False, &#39;valid_beyond_ends&#39;: False}</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.452</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory.global_clock_corrections</span>:<span class="ansi-cyan-fg">get_file</span>:<span class="ansi-cyan-fg">128</span> - <span class="ansi-bold">File T2runtime/clock/gps2utc.clk to be downloaded due to download policy if_missing: https://raw.githubusercontent.com/ipta/pulsar-clock-corrections/main/T2runtime/clock/gps2utc.clk</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.668</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.observatory.clock_file</span>:<span class="ansi-cyan-fg">read_tempo2_clock_file</span>:<span class="ansi-cyan-fg">463</span> - <span class="ansi-blue-intense-fg ansi-bold">Loading TEMPO2-format observatory clock correction file gps2utc.clk (/home/runner/.astropy/cache/download/url/d3c81b5766f4bfb84e65504c8a453085/contents) with bogus_last_correction=False</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.687</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory</span>:<span class="ansi-cyan-fg">find_clock_file</span>:<span class="ansi-cyan-fg">994</span> - <span class="ansi-bold">Using global clock file for gps2utc.clk with bogus_last_correction=False</span>
+<span class="ansi-green-fg">2024-08-30 13:43:56.689</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.observatory.topo_obs</span>:<span class="ansi-cyan-fg">clock_corrections</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Observatory magic requires no clock corrections.</span>
+<span class="ansi-green-fg">2024-08-30 13:43:59.900</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2270</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing TDB columns.</span>
+<span class="ansi-green-fg">2024-08-30 13:43:59.901</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2291</span> - <span class="ansi-blue-intense-fg ansi-bold">Using EPHEM = DE421 for TDB calculation.</span>
+<span class="ansi-green-fg">2024-08-30 13:44:00.968</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2371</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing PosVels of observatories and Earth, using DE421</span>
+<span class="ansi-green-fg">2024-08-30 13:44:02.516</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.633</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2424</span> - <span class="ansi-blue-intense-fg ansi-bold">SSB obs pos [1.47007462e+11 2.56889811e+10 1.11245045e+10] m</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.688</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.694</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2438</span> - <span class="ansi-blue-intense-fg ansi-bold">Adding columns ssb_obs_pos ssb_obs_vel obs_sun_pos</span>
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -487,13 +558,13 @@ Spindown(
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-CPU times: user 7.02 s, sys: 188 ms, total: 7.21 s
-Wall time: 17.7 s
+CPU times: user 7.15 s, sys: 199 ms, total: 7.35 s
+Wall time: 20.8 s
 </pre></div></div>
 </div>
-<p>Once we have the TOAs object and the model, the phases are easily computed using the model.phase() method. Note that the phases are computed in the interval [-0.5,0.5]. Most of the times, we use the phases in the interval [0,1] so we have to shift the negative ones.</p>
+<p>Once we have the TOAs object and the model, the phases are easily computed using the model.phase() method. Note that the phases are computed in the interval [-0.5,0.5]. Most of the time, we use the phases in the interval [0,1] so we have to shift the negative ones.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute phases</span>
@@ -509,19 +580,19 @@ Wall time: 17.7 s
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-green-fg">2024-03-27 11:26:44.636</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.glitch</span>:<span class="ansi-cyan-fg">glitch_phase</span>:<span class="ansi-cyan-fg">213</span> - <span class="ansi-blue-intense-fg ansi-bold">Glitch phase for glitch 1: 0.0 </span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.640</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">get_TZR_toa</span>:<span class="ansi-cyan-fg">98</span> - <span class="ansi-blue-intense-fg ansi-bold">Creating and dealing with the single TZR_toa for absolute phase</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.646</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">1358</span> - <span class="ansi-blue-intense-fg ansi-bold">No pulse number flags found in the TOAs</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.646</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">apply_clock_corrections</span>:<span class="ansi-cyan-fg">2200</span> - <span class="ansi-blue-intense-fg ansi-bold">Applying clock corrections (include_gps = False, include_bipm = False)</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.648</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2251</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing TDB columns.</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.648</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2272</span> - <span class="ansi-blue-intense-fg ansi-bold">Using EPHEM = DE421 for TDB calculation.</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.651</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2350</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing PosVels of observatories and Earth, using DE421</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.929</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
-<span class="ansi-green-fg">2024-03-27 11:26:44.931</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2403</span> - <span class="ansi-blue-intense-fg ansi-bold">SSB obs pos [-1.49278181e+08  7.07659442e+06  3.07113250e+06] km</span>
-<span class="ansi-green-fg">2024-03-27 11:26:45.150</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
-<span class="ansi-green-fg">2024-03-27 11:26:45.176</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2417</span> - <span class="ansi-blue-intense-fg ansi-bold">Adding columns ssb_obs_pos ssb_obs_vel obs_sun_pos</span>
-<span class="ansi-green-fg">2024-03-27 11:26:45.177</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">get_TZR_toa</span>:<span class="ansi-cyan-fg">121</span> - <span class="ansi-blue-intense-fg ansi-bold">Done with TZR_toa</span>
-<span class="ansi-green-fg">2024-03-27 11:26:45.188</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.glitch</span>:<span class="ansi-cyan-fg">glitch_phase</span>:<span class="ansi-cyan-fg">213</span> - <span class="ansi-blue-intense-fg ansi-bold">Glitch phase for glitch 1: 0.0 </span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.729</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.glitch</span>:<span class="ansi-cyan-fg">glitch_phase</span>:<span class="ansi-cyan-fg">221</span> - <span class="ansi-blue-intense-fg ansi-bold">Glitch phase for glitch 1: 0.0 </span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.735</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">get_TZR_toa</span>:<span class="ansi-cyan-fg">100</span> - <span class="ansi-blue-intense-fg ansi-bold">Creating and dealing with the single TZR_toa for absolute phase</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.738</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">1377</span> - <span class="ansi-blue-intense-fg ansi-bold">No pulse number flags found in the TOAs</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.738</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">apply_clock_corrections</span>:<span class="ansi-cyan-fg">2224</span> - <span class="ansi-blue-intense-fg ansi-bold">Applying clock corrections (include_bipm = False)</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.760</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2270</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing TDB columns.</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.761</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_TDBs</span>:<span class="ansi-cyan-fg">2291</span> - <span class="ansi-blue-intense-fg ansi-bold">Using EPHEM = DE421 for TDB calculation.</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.764</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2371</span> - <span class="ansi-blue-intense-fg ansi-bold">Computing PosVels of observatories and Earth, using DE421</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.834</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.836</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2424</span> - <span class="ansi-blue-intense-fg ansi-bold">SSB obs pos [-1.49278181e+08  7.07659442e+06  3.07113250e+06] km</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.907</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">pint.solar_system_ephemerides</span>:<span class="ansi-cyan-fg">_load_kernel_link</span>:<span class="ansi-cyan-fg">55</span> - <span class="ansi-bold">Set solar system ephemeris to de421 from download</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.908</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.toa</span>:<span class="ansi-cyan-fg">compute_posvels</span>:<span class="ansi-cyan-fg">2438</span> - <span class="ansi-blue-intense-fg ansi-bold">Adding columns ssb_obs_pos ssb_obs_vel obs_sun_pos</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.909</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.absolute_phase</span>:<span class="ansi-cyan-fg">get_TZR_toa</span>:<span class="ansi-cyan-fg">121</span> - <span class="ansi-blue-intense-fg ansi-bold">Done with TZR_toa</span>
+<span class="ansi-green-fg">2024-08-30 13:44:15.916</span> | <span class="ansi-blue-intense-fg ansi-bold">DEBUG   </span> | <span class="ansi-cyan-fg">pint.models.glitch</span>:<span class="ansi-cyan-fg">glitch_phase</span>:<span class="ansi-cyan-fg">221</span> - <span class="ansi-blue-intense-fg ansi-bold">Glitch phase for glitch 1: 0.0 </span>
 </pre></div></div>
 </div>
 </section>
@@ -529,7 +600,7 @@ Wall time: 17.7 s
 <h2>3. Adding phases and metadata to an EventList and put it in a new Observation.<a class="headerlink" href="#3.-Adding-phases-and-metadata-to-an-EventList-and-put-it-in-a-new-Observation." title="Link to this heading"></a></h2>
 <p>Once the phases are computed we need to create a new EventList table that includes both the original information of the events and the phase information in extra columns. This is necessary for Gammapy to read the phases and use them as an extra variable of each event.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the table of the EventList</span>
@@ -538,48 +609,47 @@ Wall time: 17.7 s
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show original table</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">table</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-EVENT_ID        TIME            RA       DEC       ENERGY
-                 s             deg       deg        TeV
--------- ------------------ --------- --------- -----------
-    2402  333778852.5099249  84.59457  22.03088  0.18194601
-    2408  333778852.5267153  84.21462  23.44914  0.08397394
-    2434 333778852.61315054 83.524704 22.725792  0.10596932
-    2445  333778852.6690142  83.76957 22.451006  0.19733498
-    2478  333778852.7627939 83.478516 23.484594  0.08522219
-    2481  333778852.7778549  83.71517 21.985115   1.0020943
-    2513  333778852.8644467 82.421196 22.567652  0.14374068
-    2544  333778852.9826064  83.64136 22.041315  0.10316629
-    2559  333778853.0269414 84.069176  22.97337 0.047184493
-    2561  333778853.0339344  84.84237 22.175398 0.118843034
-     ...                ...       ...       ...         ...
-  356222  333780039.4520397  84.74482 20.894981 0.043312162
-  356223  333780039.4600492  84.11615 22.557505  0.08110082
-  356227 333780039.47105366  83.41534  21.67344   0.2096362
-  356242  333780039.5179095  83.55165 22.772985  0.17672835
-  356282 333780039.62997514  84.46133  21.69357  0.05068718
-  356473  333780040.3386479  84.45441 21.159828   0.1831569
-  356478  333780040.3548926  83.68336 23.444988  0.06305169
-  356485  333780040.3741322  84.33517  21.28338 0.060539745
-  356486  333780040.3755159  84.85886 22.116222 0.123453744
-  356526 333780040.52476007  84.86929 21.290916  0.13630114
-Length = 11189 rows
-</pre></div></div>
+<div class="output_area rendered_html docutils container">
+<div><i>Table length=11189</i>
+<table id="table139641722432016" class="table-striped table-bordered table-condensed">
+<thead><tr><th>EVENT_ID</th><th>TIME</th><th>RA</th><th>DEC</th><th>ENERGY</th></tr></thead>
+<thead><tr><th></th><th>s</th><th>deg</th><th>deg</th><th>TeV</th></tr></thead>
+<thead><tr><th>int64</th><th>float64</th><th>float32</th><th>float32</th><th>float32</th></tr></thead>
+<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td></tr>
+<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td></tr>
+<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td></tr>
+<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td></tr>
+<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td></tr>
+<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td></tr>
+<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td></tr>
+<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td></tr>
+<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td></tr>
+<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td></tr>
+<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td></tr>
+<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td></tr>
+<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td></tr>
+<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td></tr>
+<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td></tr>
+<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td></tr>
+<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td></tr>
+</table></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a column for the phases to the table</span>
@@ -589,7 +659,7 @@ Length = 11189 rows
 </div>
 <p>Note that you can add multiple columns to a same file, only the name of the column has to be unique, eg <code class="docutils literal notranslate"><span class="pre">table['PHASE_SRC1']</span></code>, <code class="docutils literal notranslate"><span class="pre">table['PHASE_SRC2']</span></code> etc”</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show table with phases</span>
@@ -598,43 +668,42 @@ Length = 11189 rows
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <div><i>Table length=11189</i>
-<table id="table139998816833248" class="table-striped table-bordered table-condensed">
+<table id="table139641722432016" class="table-striped table-bordered table-condensed">
 <thead><tr><th>EVENT_ID</th><th>TIME</th><th>RA</th><th>DEC</th><th>ENERGY</th><th>PHASE</th></tr></thead>
 <thead><tr><th></th><th>s</th><th>deg</th><th>deg</th><th>TeV</th><th></th></tr></thead>
 <thead><tr><th>int64</th><th>float64</th><th>float32</th><th>float32</th><th>float32</th><th>float64</th></tr></thead>
-<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td><td>0.39349195931383935</td></tr>
-<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td><td>0.8919526790064667</td></tr>
-<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td><td>0.4579789031294724</td></tr>
-<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td><td>0.11641860219368935</td></tr>
-<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td><td>0.9004806857711186</td></tr>
-<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td><td>0.3476011689926769</td></tr>
-<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td><td>0.9182740999289545</td></tr>
-<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td><td>0.42611249421537956</td></tr>
-<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td><td>0.7422975122115125</td></tr>
+<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td><td>0.3934918682770723</td></tr>
+<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td><td>0.8919525879696997</td></tr>
+<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td><td>0.45797881185987477</td></tr>
+<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td><td>0.11641851092409164</td></tr>
+<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td><td>0.900480594501521</td></tr>
+<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td><td>0.34760107795590983</td></tr>
+<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td><td>0.9182740088921875</td></tr>
+<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td><td>0.42611240294578184</td></tr>
+<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td><td>0.7422974209419148</td></tr>
 <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-<tr><td>356222</td><td>333780039.4520397</td><td>84.74482</td><td>20.894981</td><td>0.043312162</td><td>0.4537121484157113</td></tr>
-<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td><td>0.6914920486374702</td></tr>
-<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td><td>0.018183944316962984</td></tr>
-<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td><td>0.40920620046641115</td></tr>
-<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td><td>0.7361270955486778</td></tr>
-<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td><td>0.7746789518818565</td></tr>
-<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td><td>0.2569398572226654</td></tr>
-<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td><td>0.8281109722104576</td></tr>
-<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td><td>0.8691881135544401</td></tr>
-<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td><td>0.29983901925054285</td></tr>
+<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td><td>0.6914919573678725</td></tr>
+<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td><td>0.018183853280195963</td></tr>
+<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td><td>0.4092061182772071</td></tr>
+<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td><td>0.7361270045119108</td></tr>
+<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td><td>0.7746788606122589</td></tr>
+<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td><td>0.25693976618589837</td></tr>
+<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td><td>0.8281108809408599</td></tr>
+<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td><td>0.8691880225176731</td></tr>
+<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td><td>0.29983892821377583</td></tr>
 </table></div></div>
 </div>
 <p>Now we can see that the ‘PHASE’ column has been added to the table</p>
-<p>At this point, we also want to add meta data to the table. It is very useful to keep track of what has been done to the file. For instance, if we have multiple pulsars in the same file, we want to be able to know quickly which column correspond to which pulsar. Moreover, experience shows that one often use different ephemeris file for the same pulsar. Therefore, it is very useful to have several phase columns in the same file and to be able to know which column correspond to which ephemeris
-file, parameters, etc.</p>
-<p>Since there is not yet a “standard” format for such metadata, we propose a template for the essential informations that one wants to save in the header of the event file. First, we look at the present meta info on the table.</p>
+<p>At this point, we also want to add metadata to the table. It is very useful to keep track of what has been done to the file. For instance, if a file contains multiple pulsars, we want identify quickly which column corresponds to each pulsar. Moreover, experience has shown that it is common to have different ephemeris files for the same pulsar. Therefore, it is useful to have several phase columns in the same file to easily identify which column corresponds to each ephemeris file, parameters,
+etc.</p>
+<p>Since there is currently no “standard” format for such metadata, we propose a template for the essential information that one wants to save in the header of the event file. First, we look at the present meta info on the table.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">meta</span>
@@ -642,7 +711,7 @@ file, parameters, etc.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -685,7 +754,7 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">ephemeris_file</span><span class="p">,</span> <span class="n">phase_column_name</span><span class="o">=</span><span class="s2">&quot;PHASE&quot;</span><span class="p">):</span>
@@ -726,7 +795,7 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">phase_log</span> <span class="o">=</span> <span class="n">get_log</span><span class="p">(</span><span class="n">ephemeris_file</span><span class="o">=</span><span class="n">ephemeris_file</span><span class="p">,</span> <span class="n">phase_column_name</span><span class="o">=</span><span class="s2">&quot;PHASE&quot;</span><span class="p">)</span>
@@ -739,11 +808,11 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-COLUMN_PHASE: PHASE; PINT_VERS: 0.9.8; GAMMAPY_VERS: 1.0.2; EPHEM_FILE: ./0534+2200_ApJ_708_1254_2010.par; PSRJ :J0534+2200; START: 54686.1526259; FINISH: 56583.1591704; TZRMJD: 55638.155277599951656; TZRSITE: coe; TZRFREQ: inf; EPHEM: DE405; EPHEM_RA: 5.575538888888889; EPHEM_DEC: 22.01447222222222; PHASE_OFFSET: default = 0; DATE: 60396.4769125122;
+COLUMN_PHASE: PHASE; PINT_VERS: 1.0.1; GAMMAPY_VERS: 1.2; EPHEM_FILE: 0534+2200_ApJ_708_1254_2010.par; PSRJ :J0534+2200; START: 54686.1526259; FINISH: 56583.1591704; TZRMJD: 55638.155277599951656; TZRSITE: coe; TZRFREQ: inf; EPHEM: DE405; EPHEM_RA: 5.575538888888889; EPHEM_DEC: 22.01447222222222; PHASE_OFFSET: default = 0; DATE: 60552.572407022526;
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the generated string to the meta data of the table</span>
@@ -752,7 +821,7 @@ COLUMN_PHASE: PHASE; PINT_VERS: 0.9.8; GAMMAPY_VERS: 1.0.2; EPHEM_FILE: ./0534+2
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">meta</span>
@@ -760,7 +829,7 @@ COLUMN_PHASE: PHASE; PINT_VERS: 0.9.8; GAMMAPY_VERS: 1.0.2; EPHEM_FILE: ./0534+2
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -801,12 +870,12 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
              (&#39;ALT_PNT&#39;, 69.69974),
              (&#39;AZ_PNT&#39;, 103.8848),
              (&#39;PH_LOG&#39;,
-              &#39;COLUMN_PHASE: PHASE; PINT_VERS: 0.9.8; GAMMAPY_VERS: 1.0.2; EPHEM_FILE: ./0534+2200_ApJ_708_1254_2010.par; PSRJ :J0534+2200; START: 54686.1526259; FINISH: 56583.1591704; TZRMJD: 55638.155277599951656; TZRSITE: coe; TZRFREQ: inf; EPHEM: DE405; EPHEM_RA: 5.575538888888889; EPHEM_DEC: 22.01447222222222; PHASE_OFFSET: default = 0; DATE: 60396.4769125122;&#39;)])
+              &#39;COLUMN_PHASE: PHASE; PINT_VERS: 1.0.1; GAMMAPY_VERS: 1.2; EPHEM_FILE: 0534+2200_ApJ_708_1254_2010.par; PSRJ :J0534+2200; START: 54686.1526259; FINISH: 56583.1591704; TZRMJD: 55638.155277599951656; TZRSITE: coe; TZRFREQ: inf; EPHEM: DE405; EPHEM_RA: 5.575538888888889; EPHEM_DEC: 22.01447222222222; PHASE_OFFSET: default = 0; DATE: 60552.572407022526;&#39;)])
 </pre></div></div>
 </div>
 <p>Once this is done, we can put back the table in a new <code class="docutils literal notranslate"><span class="pre">EventList</span></code> object and in a new <code class="docutils literal notranslate"><span class="pre">Observation</span></code> object.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new event list and add it to observation object</span>
@@ -823,11 +892,10 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 &#39;THETA&#39; axis is stored as a scalar -- converting to 1D array.
 &#39;THETA&#39; axis is stored as a scalar -- converting to 1D array.
 &#39;THETA&#39; axis is stored as a scalar -- converting to 1D array.
-&#39;THETA&#39; axis is stored as a scalar -- converting to 1D array.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_obs</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">table</span>
@@ -835,44 +903,43 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <div><i>Table length=11189</i>
-<table id="table139998816833248" class="table-striped table-bordered table-condensed">
+<table id="table139641722432016" class="table-striped table-bordered table-condensed">
 <thead><tr><th>EVENT_ID</th><th>TIME</th><th>RA</th><th>DEC</th><th>ENERGY</th><th>PHASE</th></tr></thead>
 <thead><tr><th></th><th>s</th><th>deg</th><th>deg</th><th>TeV</th><th></th></tr></thead>
 <thead><tr><th>int64</th><th>float64</th><th>float32</th><th>float32</th><th>float32</th><th>float64</th></tr></thead>
-<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td><td>0.39349195931383935</td></tr>
-<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td><td>0.8919526790064667</td></tr>
-<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td><td>0.4579789031294724</td></tr>
-<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td><td>0.11641860219368935</td></tr>
-<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td><td>0.9004806857711186</td></tr>
-<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td><td>0.3476011689926769</td></tr>
-<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td><td>0.9182740999289545</td></tr>
-<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td><td>0.42611249421537956</td></tr>
-<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td><td>0.7422975122115125</td></tr>
+<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td><td>0.3934918682770723</td></tr>
+<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td><td>0.8919525879696997</td></tr>
+<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td><td>0.45797881185987477</td></tr>
+<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td><td>0.11641851092409164</td></tr>
+<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td><td>0.900480594501521</td></tr>
+<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td><td>0.34760107795590983</td></tr>
+<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td><td>0.9182740088921875</td></tr>
+<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td><td>0.42611240294578184</td></tr>
+<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td><td>0.7422974209419148</td></tr>
 <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-<tr><td>356222</td><td>333780039.4520397</td><td>84.74482</td><td>20.894981</td><td>0.043312162</td><td>0.4537121484157113</td></tr>
-<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td><td>0.6914920486374702</td></tr>
-<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td><td>0.018183944316962984</td></tr>
-<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td><td>0.40920620046641115</td></tr>
-<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td><td>0.7361270955486778</td></tr>
-<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td><td>0.7746789518818565</td></tr>
-<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td><td>0.2569398572226654</td></tr>
-<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td><td>0.8281109722104576</td></tr>
-<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td><td>0.8691881135544401</td></tr>
-<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td><td>0.29983901925054285</td></tr>
+<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td><td>0.6914919573678725</td></tr>
+<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td><td>0.018183853280195963</td></tr>
+<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td><td>0.4092061182772071</td></tr>
+<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td><td>0.7361270045119108</td></tr>
+<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td><td>0.7746788606122589</td></tr>
+<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td><td>0.25693976618589837</td></tr>
+<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td><td>0.8281108809408599</td></tr>
+<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td><td>0.8691880225176731</td></tr>
+<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td><td>0.29983892821377583</td></tr>
 </table></div></div>
 </div>
 </section>
 <section id="4.-Save-new-Event-List-and-writing-a-modify-HDU-index-table">
 <h2>4. Save new Event List and writing a modify HDU index table<a class="headerlink" href="#4.-Save-new-Event-List-and-writing-a-modify-HDU-index-table" title="Link to this heading"></a></h2>
-<p>In the following, we show how to write the files in a directory contained in the original datastore directory. This follows the logic of DL3 data store and facilitate the manipulation of the HDU table.</p>
-<p>If one does not want to save the events files and directly perform the pulsar analysis, this step is not required as well as the step of the meta data handling. However, be aware that for large dataset, the computation of phases can take tens of minutes.</p>
+<p>In the following, we show how to write the files in a directory contained in the original datastore directory. This follows the logic of DL3 data store and facilitates the manipulation of the HDU table.</p>
+<p>If you do not want to save the events files bur rather directly perform the pulsar analysis, you can skip both this step and the step of the handling metadata. However, be aware that for large datasets, the computation of the phases can take tens of minutes.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_store</span><span class="o">.</span><span class="n">hdu_table</span><span class="o">.</span><span class="n">base_dir</span>
@@ -880,16 +947,16 @@ OrderedDict([(&#39;EXTNAME&#39;, &#39;EVENTS&#39;),
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-PosixPath(&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.0.2/magic/rad_max/data&#39;)
+PosixPath(&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.2/magic/rad_max/data&#39;)
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define output directory and filename</span>
@@ -904,7 +971,7 @@ PosixPath(&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-dataset
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output_path</span>
@@ -912,23 +979,21 @@ PosixPath(&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-dataset
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.0.2/magic/rad_max/data/pulsar_events_file/&#39;
+&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.2/magic/rad_max/data/pulsar_events_file/&#39;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save the observation object in the specified file_path</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing outputfile in &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
-<span class="n">observation</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-    <span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">gti</span><span class="o">=</span><span class="n">observation</span><span class="o">.</span><span class="n">gti</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing output file in &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+<span class="n">new_obs</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">include_irfs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -937,12 +1002,12 @@ PosixPath(&#39;/home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-dataset
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.0.2/magic/rad_max/data/pulsar_events_file/dl3_pulsar_5029747.fits.gz
+Writing output file in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-datasets/1.2/magic/rad_max/data/pulsar_events_file/dl3_pulsar_5029747.fits.gz
 </pre></div></div>
 </div>
 <p>Once the file has been written, we want to write a modified version of the HDU table. This is mandatory if we want to open the phased events file together with its associated IRFs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the current data store HDU table.</span>
@@ -952,12 +1017,12 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <div><i>HDUIndexTable length=10</i>
-<table id="table139998795982544" class="table-striped table-bordered table-condensed">
+<table id="table139641579657808" class="table-striped table-bordered table-condensed">
 <thead><tr><th>OBS_ID</th><th>HDU_TYPE</th><th>HDU_CLASS</th><th>FILE_DIR</th><th>FILE_NAME</th><th>HDU_NAME</th></tr></thead>
 <thead><tr><th>int64</th><th>bytes30</th><th>bytes30</th><th>bytes100</th><th>bytes50</th><th>bytes30</th></tr></thead>
 <tr><td>5029748</td><td>events</td><td>events</td><td>./</td><td>20131004_05029748_DL3_CrabNebula-W0.40+215.fits</td><td>EVENTS</td></tr>
@@ -973,18 +1038,20 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </table></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">new_hdu</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;HDU_NAME&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EVENTS&quot;</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;OBS_ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">observation</span><span class="o">.</span><span class="n">obs_id</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;HDU_NAME&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EVENTS&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;OBS_ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">observation</span><span class="o">.</span><span class="n">obs_id</span>
+    <span class="p">):</span>
         <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;FILE_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">output_directory</span><span class="p">)</span>
         <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;FILE_NAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_hdu</span>
@@ -992,12 +1059,12 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <div><i>HDUIndexTable length=10</i>
-<table id="table139998795982544" class="table-striped table-bordered table-condensed">
+<table id="table139641579657808" class="table-striped table-bordered table-condensed">
 <thead><tr><th>OBS_ID</th><th>HDU_TYPE</th><th>HDU_CLASS</th><th>FILE_DIR</th><th>FILE_NAME</th><th>HDU_NAME</th></tr></thead>
 <thead><tr><th>int64</th><th>bytes30</th><th>bytes30</th><th>bytes100</th><th>bytes50</th><th>bytes30</th></tr></thead>
 <tr><td>5029748</td><td>events</td><td>events</td><td>./</td><td>20131004_05029748_DL3_CrabNebula-W0.40+215.fits</td><td>EVENTS</td></tr>
@@ -1013,9 +1080,9 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </table></div></div>
 </div>
 <p>We see that the <code class="docutils literal notranslate"><span class="pre">FILE_DIR</span></code>and <code class="docutils literal notranslate"><span class="pre">FILE_NAME</span></code>entry have been modified for our phased events file.</p>
-<p>Finally, we need to save the new HDU table in the origianl DL3 directory. Here one should be very careful to not name the new HDU file with the same name as the original HDU file of the data store. Otherwise, the original HDU file will be overwrited.</p>
+<p>Finally, we need to save the new HDU table in the original DL3 directory. One must be very careful with naming the new HDU file, such that it does not have the same name as the original HDU file of the data store. Otherwise, the original HDU file will be overwritten.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_hdu</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
@@ -1024,23 +1091,23 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </pre></div>
 </div>
 </div>
-<p><strong>Note: Here we use only one approach that could be useful, showing the steps to save the new Event files in a random directory and generate a new modified HDU index table. However, the user is free to chose the absolute path of the EventList and DataStore. For instance, another approach could be making a full copy of the DataStore, or changing the location of the pulsar event files to one that could be more convinient for the user.</strong></p>
+<p><strong>Note: Here we demonstrate only one approach that could be useful, showing the steps to save the new Event files in a directory and generate a new modified HDU index table. However, the user is free to choose the absolute path of the EventList and DataStore. Another approach, for instance, could be making a full copy of the DataStore, or changing the location of the pulsar event files to one that is more convenient for the user.</strong></p>
 </section>
 <section id="5.-Opening-the-new-DataStore">
 <h2>5. Opening the new DataStore<a class="headerlink" href="#5.-Opening-the-new-DataStore" title="Link to this heading"></a></h2>
-<p>Once all of this is done, we just have to open the data store using <code class="docutils literal notranslate"><span class="pre">DataStore.from_dir()</span></code>and passing the pulsar HDU table to it :</p>
+<p>Once all of this is done, we just have to open the data store using DataStore.from_dir() and pass the pulsar HDU table to it :</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pulsar_datastore</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">from_dir</span><span class="p">(</span>
-    <span class="n">DL3_direc</span><span class="p">,</span> <span class="n">hdu_table_filename</span><span class="o">=</span><span class="s2">&quot;hdu-index-pulsar.fits.gz&quot;</span>
+    <span class="n">DL3_dir</span><span class="p">,</span> <span class="n">hdu_table_filename</span><span class="o">=</span><span class="s2">&quot;hdu-index-pulsar.fits.gz&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observations</span> <span class="o">=</span> <span class="n">pulsar_datastore</span><span class="o">.</span><span class="n">get_observations</span><span class="p">(</span>
@@ -1051,7 +1118,7 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1060,7 +1127,7 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">table</span>
@@ -1068,42 +1135,41 @@ Writing outputfile in /home/runner/work/gammapy-recipes/gammapy-recipes/gammapy-
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <div><i>Table length=11189</i>
-<table id="table139998816833104" class="table-striped table-bordered table-condensed">
-<thead><tr><th>EVENT_ID</th><th>TIME</th><th>RA</th><th>DEC</th><th>ENERGY</th></tr></thead>
-<thead><tr><th></th><th>s</th><th>deg</th><th>deg</th><th>TeV</th></tr></thead>
-<thead><tr><th>int64</th><th>float64</th><th>float32</th><th>float32</th><th>float32</th></tr></thead>
-<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td></tr>
-<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td></tr>
-<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td></tr>
-<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td></tr>
-<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td></tr>
-<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td></tr>
-<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td></tr>
-<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td></tr>
-<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td></tr>
-<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-<tr><td>356222</td><td>333780039.4520397</td><td>84.74482</td><td>20.894981</td><td>0.043312162</td></tr>
-<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td></tr>
-<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td></tr>
-<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td></tr>
-<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td></tr>
-<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td></tr>
-<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td></tr>
-<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td></tr>
-<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td></tr>
-<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td></tr>
+<table id="table139641525829968" class="table-striped table-bordered table-condensed">
+<thead><tr><th>EVENT_ID</th><th>TIME</th><th>RA</th><th>DEC</th><th>ENERGY</th><th>PHASE</th></tr></thead>
+<thead><tr><th></th><th>s</th><th>deg</th><th>deg</th><th>TeV</th><th></th></tr></thead>
+<thead><tr><th>int64</th><th>float64</th><th>float32</th><th>float32</th><th>float32</th><th>float64</th></tr></thead>
+<tr><td>2402</td><td>333778852.5099249</td><td>84.59457</td><td>22.03088</td><td>0.18194601</td><td>0.3934918682770723</td></tr>
+<tr><td>2408</td><td>333778852.5267153</td><td>84.21462</td><td>23.44914</td><td>0.08397394</td><td>0.8919525879696997</td></tr>
+<tr><td>2434</td><td>333778852.61315054</td><td>83.524704</td><td>22.725792</td><td>0.10596932</td><td>0.45797881185987477</td></tr>
+<tr><td>2445</td><td>333778852.6690142</td><td>83.76957</td><td>22.451006</td><td>0.19733498</td><td>0.11641851092409164</td></tr>
+<tr><td>2478</td><td>333778852.7627939</td><td>83.478516</td><td>23.484594</td><td>0.08522219</td><td>0.900480594501521</td></tr>
+<tr><td>2481</td><td>333778852.7778549</td><td>83.71517</td><td>21.985115</td><td>1.0020943</td><td>0.34760107795590983</td></tr>
+<tr><td>2513</td><td>333778852.8644467</td><td>82.421196</td><td>22.567652</td><td>0.14374068</td><td>0.9182740088921875</td></tr>
+<tr><td>2544</td><td>333778852.9826064</td><td>83.64136</td><td>22.041315</td><td>0.10316629</td><td>0.42611240294578184</td></tr>
+<tr><td>2559</td><td>333778853.0269414</td><td>84.069176</td><td>22.97337</td><td>0.047184493</td><td>0.7422974209419148</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr><td>356223</td><td>333780039.4600492</td><td>84.11615</td><td>22.557505</td><td>0.08110082</td><td>0.6914919573678725</td></tr>
+<tr><td>356227</td><td>333780039.47105366</td><td>83.41534</td><td>21.67344</td><td>0.2096362</td><td>0.018183853280195963</td></tr>
+<tr><td>356242</td><td>333780039.5179095</td><td>83.55165</td><td>22.772985</td><td>0.17672835</td><td>0.4092061182772071</td></tr>
+<tr><td>356282</td><td>333780039.62997514</td><td>84.46133</td><td>21.69357</td><td>0.05068718</td><td>0.7361270045119108</td></tr>
+<tr><td>356473</td><td>333780040.3386479</td><td>84.45441</td><td>21.159828</td><td>0.1831569</td><td>0.7746788606122589</td></tr>
+<tr><td>356478</td><td>333780040.3548926</td><td>83.68336</td><td>23.444988</td><td>0.06305169</td><td>0.25693976618589837</td></tr>
+<tr><td>356485</td><td>333780040.3741322</td><td>84.33517</td><td>21.28338</td><td>0.060539745</td><td>0.8281108809408599</td></tr>
+<tr><td>356486</td><td>333780040.3755159</td><td>84.85886</td><td>22.116222</td><td>0.123453744</td><td>0.8691880225176731</td></tr>
+<tr><td>356526</td><td>333780040.52476007</td><td>84.86929</td><td>21.290916</td><td>0.13630114</td><td>0.29983892821377583</td></tr>
 </table></div></div>
 </div>
 <p>We can see that we recover both the IRFs and the events file with the phase column.</p>
 </section>
 <section id="6.-Pulsar-analysis-tools-with-gammapy">
 <h2>6. Pulsar analysis tools with gammapy<a class="headerlink" href="#6.-Pulsar-analysis-tools-with-gammapy" title="Link to this heading"></a></h2>
-<p>Once we have the corret DataStore and the modified EventList with the phase information, we can do the pulsar analysis using different tools for Gammapy to compute the phaseogram, maps, SED, lightcurve, etc… To do so, one can check the following <a class="reference external" href="https://docs.gammapy.org/1.0/tutorials/analysis-time/pulsar_analysis.html#sphx-glr-tutorials-analysis-time-pulsar-analysis-py">Gammapy tutorial</a>.</p>
+<p>Once we have the correct DataStore and the modified EventList with the phase information, we can perform the pulsar analysis using different tools available in Gammapy. Allowing us to compute the phaseogram, maps, SED, lightcurve and more. To do so, please refer to the following <a class="reference external" href="https://docs.gammapy.org/1.0/tutorials/analysis-time/pulsar_analysis.html#sphx-glr-tutorials-analysis-time-pulsar-analysis-py">Gammapy tutorial</a>.</p>
 <p>Recipe made by <a class="reference external" href="https://github.com/alvmas">Alvaros Mas</a>, <a class="reference external" href="https://github.com/MRegeard">Maxime Regeard</a>, <a class="reference external" href="https://github.com/jalu98">Jan Lukas Schubert</a>.</p>
 </section>
 </section>
