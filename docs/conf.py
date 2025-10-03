@@ -6,67 +6,65 @@
 import os
 import datetime
 
-# -- nbsphinx settings
-extensions = ["nbsphinx", "sphinx_gallery.load_style", "IPython.sphinxext.ipython_console_highlighting"]
-exclude_patterns = ["_build"]
-nbsphinx_execute = "never"
-
-# -- project settings
-project = "Gammapy recipes"
+# -- General configuration ----------------------------------------------------
 author = "Gammapy recipes contributors"
 copyright = "{}, {}".format(datetime.datetime.now().year, author)
 
-# -- theme settings
-# remove view source link
+
+highlight_language = "python3"
+html_theme = "pydata_sphinx_theme"
 html_show_sourcelink = False
-
-# static files to copy after template files
 html_static_path = ["_static"]
-
-# html_theme_options = {
-#    'logotext1': 'gamma',  # white,  semi-bold
-#    'logotext2': 'py',  # orange, light
-#    'logotext3': ':docs'  # white,  light
-# }
-
-html_theme_options = {
-    "canonical_url": "https://gammapy.org",
-    "analytics_id": "",
-    "logo_only": False,
-    "display_version": True,
-    "prev_next_buttons_location": "bottom",
-    # Toc options
-    "collapse_navigation": False,
-    "sticky_navigation": True,
-    "navigation_depth": 4,
-}
-
-# Add any paths that contain custom themes here, relative to this directory.
-# To use a different custom theme, add the directory containing the theme.
-# html_theme_path = []
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes. To override the custom theme, set this to the
-# name of a builtin theme or the name of a custom theme in html_theme_path.
-html_theme = "sphinx_rtd_theme"
-
-# Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-# html_favicon = ''
+html_logo = os.path.join(html_static_path[0], "gammapy_logo.png")
 html_favicon = os.path.join(html_static_path[0], "gammapy_logo.ico")
 
-# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
-# using the given strftime format.
-# html_last_updated_fmt = ''
+html_theme_options = {
+    "header_links_before_dropdown": 6,
+    "show_toc_level": 2,
+    "show_prev_next": False,
+    "icon_links": [
+        {
+            "name": "Github",
+            "url": "https://github.com/gammapy/gammapy-recipes",
+            "icon": "fab fa-github-square",
+        },
+        {
+            "name": "Slack",
+            "url": "https://gammapy.slack.com/",
+            "icon": "fab fa-slack",
+        },
+    ],
+    "navbar_end": ["theme-switcher", "navbar-icon-links"],
+    "navigation_with_keys": True,
+    # footers
+    "footer_start": ["copyright"],#,"custom-footer.html"],
+    "footer_center": ["last-updated"],
+    "footer_end": ["sphinx-version", "theme-version"]
+}
 
-# The name for this set of Sphinx documents.
-html_title = project
+
+html_context = {
+    "default_mode": "light",
+}
 
 
-# html_style = ''
-def setup(app):
-    app.add_css_file("gammapy.css")
+sphinx_gallery_conf = {
+    "examples_dirs": ["../recipes"],    # path to your recipe scripts
+    "gallery_dirs": ["recipes_gallery"],       # where SG will put rst/html
+    "plot_gallery": False,            # never re-execute
+    #"run_stale_examples": "skip",   False    # don’t try to rebuild
+    "filename_pattern": r"^.*\.py$",        # only .py files
+    "ignore_pattern": r"__init__\.py",  # skip __init__ etc
+    # Appearance
+    "remove_config_comments": True,
+    "download_all_examples": True,
+    "nested_sections": True,
+    "show_memory": False,
+    "line_numbers": False,
+}
+
+
+extensions = [
+    "sphinx.ext.mathjax",
+    "sphinx_gallery.gen_gallery",
+]
