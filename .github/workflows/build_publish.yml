@@ -1,6 +1,7 @@
 name: build_publish
 
 on:
+  workflow-dispath:
 
 jobs:
   execute:
