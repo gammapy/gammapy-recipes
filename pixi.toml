@@ -13,6 +13,7 @@ sphinx = ">=8.2.3,<9"
 sphinx-gallery = ">=0.19.0,<0.20"
 pydata-sphinx-theme = ">=0.16.1,<0.17"
 nbconvert = "*"
+pandoc = ">=3.8.2,<4"
 
 [feature.gp-background-model]
 channels = ["conda-forge"]
