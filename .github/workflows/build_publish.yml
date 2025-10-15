@@ -1,0 +1,33 @@
+name: build_publish
+
+on:
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        recipe: [background-model]   # expand automatically if you parse pixi.toml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.6.0
+      - run: pixi run -e ${{ matrix.recipe }} execute-${{ matrix.recipe }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: executed-notebooks
+          path: executed_notebooks/
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: execute
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: executed-notebooks
+          path: executed_notebooks/
+      - uses: prefix-dev/setup-pixi@v0.6.0
+      - run: pixi run build-docs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html
