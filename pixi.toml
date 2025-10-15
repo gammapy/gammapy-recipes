@@ -28,7 +28,7 @@ tqdm = "*"
 
 [feature.gp-background-model.tasks]
 gammapy-data-download = "gammapy download datasets"
-execute = { cmd = "jupyter nbconvert --execute recipes/background-model/background_model.ipynb --to rst", env = { GAMMAPY_DATA = "$PWD/gammapy-datasets/1.0.2/" } }
+execute = { cmd = "jupyter nbconvert --execute recipes/background-model/background_model.ipynb --to notebook", env = { GAMMAPY_DATA = "$PWD/gammapy-datasets/1.0.2/" } }
 
 [feature.pulsar-gammapy]
 channels = ["conda-forge"]
